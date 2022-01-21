@@ -73,12 +73,10 @@ class all_the_guesses:
         """
         divider = "-" * 4 * self.word_length
         remaining_guesses = self.game_length - len(self.guesses)
-        if remaining_guesses > 1:
-            print(divider, remaining_guesses, 'guesses left')
-        elif remaining_guesses == 1:
-            print(divider, 'One guess left')
+        if remaining_guesses == 1:
+            print(divider, '1 guess left')
         else:
-            print(divider)
+            print(divider, remaining_guesses, 'guesses left')
         ## if there aren't any guesses yet, this does nothing
         for g in self.guesses:
             guess_display(g, self.answer).display()
