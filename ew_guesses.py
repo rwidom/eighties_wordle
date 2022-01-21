@@ -28,12 +28,15 @@ class all_the_guesses:
         """  
         self.goofs += [word]
         remaining_goofs = self.game_length - len(self.goofs)
-        if remaining_goofs == 0:
-            print("Seems like you don't want to play any more.")
-            self.game_over = True
+        if remaining_goofs <= 0:
+            bad_guess = word[:self.word_length] \
+                .lower().strip() \
+                .rjust(self.word_length,'*')
+            self.guesses += [ bad_guess ]
+            self.print_header()
         else:
-            print(instruction,"You have",remaining_goofs,"remaining warnings.")
-            self._next_guess()
+            print(instruction," (You have",remaining_goofs,"remaining warnings.)")
+        self._next_guess()
 
     
     def _next_guess(self):
