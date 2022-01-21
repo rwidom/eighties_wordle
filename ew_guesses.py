@@ -27,8 +27,13 @@ class all_the_guesses:
         what to do when there is a goof
         """  
         self.goofs += [word]
-        print(instruction)
-        self._next_guess()
+        remaining_goofs = self.game_length - len(self.goofs)
+        if remaining_goofs == 0:
+            print("Seems like you don't want to play any more.")
+            self.game_over = True
+        else:
+            print(instruction,"You have",remaining_goofs,"remaining warnings.")
+            self._next_guess()
 
     
     def _next_guess(self):
@@ -51,7 +56,7 @@ class all_the_guesses:
             msg = "Please enter a word you haven't already guessed."
             self._try_again(w, msg)
         elif w not in self.all_words:
-            msg = 'Sorry, ' + w + ' is not a word in our dictionary. Please try again.'
+            msg = 'Sorry, ' + w + ' is not in our dictionary. Please try again.'
             self._try_again(w, msg)
         else:
             self.guesses += [w]
@@ -80,7 +85,7 @@ class all_the_guesses:
         else:
             self.print_header()
             if self.guesses[-1] == self.answer:
-                print("Congratulations! You won in",len(self.guesses),'guesses and',len(self.goofs),'goofs!')
+                print('Congratulations!!!')
                 self.game_over = True
             elif len(self.guesses) == self.game_length:
                 print("Sorry, that was your last guess. The word was", self.answer)
