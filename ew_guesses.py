@@ -28,11 +28,10 @@ class all_the_guesses:
         """  
         self.goofs += [word]
         print(instruction)
-        try_again = str(input(':'))
-        self._guess_validator(try_again)
+        self._next_guess()
 
     
-    def _guess_validator(self, guess):
+    def _next_guess(self):
         """
         Input: guess is a word that the user typed in
         Output: None
@@ -41,7 +40,7 @@ class all_the_guesses:
             it is added to the list of goofs, we ask the user to try again, and we check again.
             - If the word *IS* valid, we add it to the list of guesses in the last position.
         """
-        w = guess.upper()
+        w = str(input(':')).upper()
         if not(w.isalpha()):
             msg = 'Please enter '+str(self.word_length)+' letters, no symbols or spaces.'
             self._try_again(w, msg)
@@ -58,30 +57,36 @@ class all_the_guesses:
             self.guesses += [w]
         return None
 
+
+    def print_header(self):
+        """ 
+        print a line, notice of remaining guesses, and feedback on past guesses
+        for the top of each turn 
+        """
+        print("-" * 40, self.game_length - len(self.guesses), 'guesses left')
+        ## if there aren't any guesses yet, this does nothing
+        for g in self.guesses:
+            guess_display(g, self.answer).display()
     
+
     def next_step(self):
         """
         Displays the normal prompt for the next guess and calls the validator.
-        """
+        """        
         if len(self.guesses) == 0:
-            print("-" * 40)
-            print("I'm thinking of a", self.word_length, "letter word. You have", self.game_length, "guesses. Go!")
-            next_guess = str(input(':'))
-            self._guess_validator(next_guess)
-        elif self.guesses[-1] == self.answer:
-            guess_display(self.guesses[-1], self.answer).display()
-            print("Congratulations! You won in",len(self.guesses),'guesses and',len(self.goofs),'goofs!')
-            self.game_over = True
-        elif len(self.guesses) == self.game_length:
-            guess_display(self.guesses[-1], self.answer).display()
-            print("Sorry, that was your last guess. The word was", self.answer)
-            self.game_over = True
+            print("I'm thinking of a", self.word_length, "letter word. Start guessing!")
+            self.print_header()
+            self._next_guess()
         else:
-            print("-" * 40, self.game_length - len(self.guesses), 'guesses left')
-            for g in self.guesses:
-                guess_display(g, self.answer).display()
-            next_guess = str(input(':'))
-            self._guess_validator(next_guess)
+            self.print_header()
+            if self.guesses[-1] == self.answer:
+                print("Congratulations! You won in",len(self.guesses),'guesses and',len(self.goofs),'goofs!')
+                self.game_over = True
+            elif len(self.guesses) == self.game_length:
+                print("Sorry, that was your last guess. The word was", self.answer)
+                self.game_over = True
+            else:
+                self._next_guess()
 
 
 
