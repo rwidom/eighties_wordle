@@ -71,7 +71,14 @@ class all_the_guesses:
         print a line, notice of remaining guesses, and feedback on past guesses
         for the top of each turn 
         """
-        print("-" * 4 * self.word_length, self.game_length - len(self.guesses), 'guesses left')
+        divider = "-" * 4 * self.word_length
+        remaining_guesses = self.game_length - len(self.guesses)
+        if remaining_guesses > 1:
+            print(divider, remaining_guesses, 'guesses left')
+        elif remaining_guesses == 1:
+            print(divider, 'One guess left')
+        else:
+            print(divider)
         ## if there aren't any guesses yet, this does nothing
         for g in self.guesses:
             guess_display(g, self.answer).display()
@@ -91,7 +98,7 @@ class all_the_guesses:
                 print('Congratulations!!!')
                 self.game_over = True
             elif len(self.guesses) == self.game_length:
-                print("Sorry, that was your last guess. The word was", self.answer)
+                print("Sorry, that was your last guess. The word was", self.answer, ".")
                 self.game_over = True
             else:
                 self._next_guess()
