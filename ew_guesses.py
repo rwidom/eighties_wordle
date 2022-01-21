@@ -33,10 +33,10 @@ class all_the_guesses:
                 .lower().strip() \
                 .rjust(self.word_length,'*')
             self.guesses += [ bad_guess ]
-            self.print_header()
+            self.next_step()
         else:
             print(instruction," (You have",remaining_goofs,"remaining warnings.)")
-        self._next_guess()
+            self._next_guess()
 
     
     def _next_guess(self):
