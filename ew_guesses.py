@@ -68,7 +68,7 @@ class all_the_guesses:
         print a line, notice of remaining guesses, and feedback on past guesses
         for the top of each turn 
         """
-        print("-" * 40, self.game_length - len(self.guesses), 'guesses left')
+        print("-" * 4 * self.word_length, self.game_length - len(self.guesses), 'guesses left')
         ## if there aren't any guesses yet, this does nothing
         for g in self.guesses:
             guess_display(g, self.answer).display()

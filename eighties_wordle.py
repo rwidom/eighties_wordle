@@ -8,9 +8,11 @@ from ew_answer import all_the_words
 from ew_guesses import all_the_guesses
 
 ## initialize the game dictionary and choose a word
-d = all_the_words()
+# don't have to specify 5 here, but in case I want to change it...
+d = all_the_words(word_length=5)
 ## initialize the object to handle of guesses and feedback
-g = all_the_guesses(d)
+# don't have to specify 6 here, but in case I want to change it...
+g = all_the_guesses(d, game_length=6)
 ## play the game
 while not(g.game_over):
     g.next_step()
