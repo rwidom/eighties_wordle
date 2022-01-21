@@ -69,11 +69,11 @@ class all_the_guesses:
             next_guess = str(input(':'))
             self._guess_validator(next_guess)
         elif self.guesses[-1] == self.answer:
-            self.guess_display(self.guesses[-1], self.answer).display()
+            guess_display(self.guesses[-1], self.answer).display()
             print("Congratulations! You won in",len(self.guesses),'guesses and',len(self.goofs),'goofs!')
             self.game_over = True
         elif len(self.guesses) == self.game_length:
-            self.guess_display(self.guesses[-1], self.answer).display()
+            guess_display(self.guesses[-1], self.answer).display()
             print("Sorry, that was your last guess. The word was", self.answer)
             self.game_over = True
         else:
