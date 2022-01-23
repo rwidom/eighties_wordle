@@ -14,9 +14,11 @@ class all_the_guesses:
     def __init__(self, game_dictionary, game_length = 6):
 
         self.game_length = game_length
+        self.game_dictionary = game_dictionary
         self.all_words = game_dictionary.word_list
         self.answer = game_dictionary.answer
         self.word_length = game_dictionary.word_length
+        self.hint_tree = game_dictionary.hint_tree
         self.guesses = []
         self.goofs = []
         self.game_over = False
@@ -49,7 +51,18 @@ class all_the_guesses:
             - If the word *IS* valid, we add it to the list of guesses in the last position.
         """
         w = str(input(':')).upper()
-        if not(w.isalpha()):
+        if w.isnumeric():
+            if int(w)>0 and int(w)<=len(self.guesses):
+                letter_statuses = list(guess_display(self.guesses[int(w)-1], self.answer).get_letter_statuses())
+                word_with_blanks = "".join([ \
+                    char*(status == 'OK') + '_'*(status != 'OK') \
+                    for (char, status) in letter_statuses
+                    ])
+                print(", ".join(self.game_dictionary.collect_hints(word_with_blanks)))
+            else:
+                msg = "For a hint, please enter the single digit turn number for the word you'd like to search."
+                self._try_again(w, msg)
+        elif not(w.isalpha()):
             msg = 'Please enter '+str(self.word_length)+' letters, no symbols or spaces.'
             self._try_again(w, msg)
         elif len(w) != self.word_length:
