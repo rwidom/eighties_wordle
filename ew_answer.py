@@ -145,4 +145,6 @@ class all_the_words:
         hints = self.hint_tree[l1_key][l2_keys[0]]
         for l2 in l2_keys[1:]:
             hints = set.intersection(hints, self.hint_tree[l1_key][l2])
-        return(list(hints))
+        hints = list(hints)
+        hints.sort()
+        return(hints)
