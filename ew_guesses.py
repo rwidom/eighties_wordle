@@ -51,13 +51,16 @@ class all_the_guesses:
             - If the word *IS* valid, we add it to the list of guesses in the last position.
         """
         w = str(input(':')).upper()
-        if w.isnumeric():
-            if int(w)>0 and int(w)<=len(self.guesses):
+        if w.isnumeric() or w=='*':
+            if w=='*':
+                letter_statuses = list(guess_display(self.guesses[-1], self.answer).get_letter_statuses())
+                word_with_blanks = "".join([ char*(status == 'OK') + '_'*(status != 'OK') \
+                    for (char, status) in letter_statuses])
+                print(", ".join(self.game_dictionary.collect_hints(word_with_blanks)))
+            elif (int(w)>0 and int(w)<=len(self.guesses)):
                 letter_statuses = list(guess_display(self.guesses[int(w)-1], self.answer).get_letter_statuses())
-                word_with_blanks = "".join([ \
-                    char*(status == 'OK') + '_'*(status != 'OK') \
-                    for (char, status) in letter_statuses
-                    ])
+                word_with_blanks = "".join([ char*(status == 'OK') + '_'*(status != 'OK') \
+                    for (char, status) in letter_statuses])
                 print(", ".join(self.game_dictionary.collect_hints(word_with_blanks)))
             else:
                 msg = "For a hint, please enter the single digit turn number for the word you'd like to search."
