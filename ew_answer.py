@@ -9,7 +9,7 @@ class all_the_words:
 
     def __init__(self, 
         word_length=5,
-        word_list_file_loc='../Downloads/wlist_match10.txt'):
+        word_list_file_loc='../Downloads/wordlist.txt'):
         """ Wordle uses five letter words, as far as I know, but in case we want to do
         something different in the future, let's make it possible to set that here.
         All words are upper case. """
@@ -50,7 +50,9 @@ class all_the_words:
         citation = \
             "We're using the word list stored at " + self.file_location \
             + "\nIt comes from the list of words appearing in at least 10 sources compiled " \
-            + "\nby Keith at https://www.keithv.com/software/wlist/"
+            + "\nby Keith at https://www.keithv.com/software/wlist/" \
+            + "\nJust two modifications: dropping words with apostrophes, and dropping the " \
+            + "\nword bitch, because fuck there's enough misogyny, I don't need it in my game."
         if print:
             print(citation)
             return None
