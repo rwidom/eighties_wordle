@@ -18,6 +18,9 @@ class guess_display:
         """
         self.guess = guess
         self.answer = answer 
+        self.colors = self.get_colors()
+        self.letters = self.get_letter_statuses()
+
 
 
     def get_colors(self):
@@ -39,20 +42,20 @@ class guess_display:
         return(colors)
     
 
-    def get_letter_statuses(self):
+    def get_letter_statuses(self, word = guess):
         """
         Input: successful object initialization, with guess and answer strings
         Output: a tuple of tuples with each letter of the guess, followed by its status
         """
         statuses = []
-        for i in range(len(self.guess)):
-            if self.guess[i] == self.answer[i]:
+        for i in range(len(word)):
+            if word[i] == self.answer[i]:
                 statuses += ['OK']
-            elif self.guess[i] in self.answer:
+            elif word[i] in self.answer:
                 statuses += ['MOVE']
             else:
                 statuses += ['NO']
-        return(tuple(zip(self.guess, statuses)))
+        return(tuple(zip(word, statuses)))
 
 
     def display(self):
@@ -60,12 +63,6 @@ class guess_display:
         Input: successful object initialization, with guess and answer strings
         Output: a list of tuples with each letter of the guess, paired with it's status
         """
-        
-        ## get the color dict
-        colors = self.get_colors()
-        
-        ## get the status for each letter in the guessed word
-        letters = self.get_letter_statuses()
 
         ## generate the final string and print it
         print_string = ' '.join(
@@ -73,3 +70,20 @@ class guess_display:
             for l in letters]
         )
         print(print_string)
+
+    def display_keyboard(self, guesses):
+        assert type(guesses) == list
+        keyboard = 'QWERTYUIOP \n ASDFGHJKL \n ZXCVBNM'
+        guessed_letters = [letter for word in guesses for letter in get_letter_statuses(word)]
+        no = set([l[0] for l in guessed_letters if l[1] == 'NO'])
+        ok = set([l[0] for l in guessed_letters if l[1] == 'OK'])
+        move = set([l[0] for l in guessed_letters if l[1] == 'MOVE']) - ok
+        for letter in move:
+            keyboard.replace(letter, colors['MOVE'] + letter + colors['END'])
+        for letter in ok:
+            keyboard.replace(letter, colors['OK'] + letter + colors['END'])
+        for letter in no:
+            keyboard.replace(letter, colors['NO'] + letter + colors['END'])
+        print(keyboard)
+
+

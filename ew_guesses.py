@@ -95,7 +95,10 @@ class all_the_guesses:
             print(divider, remaining_guesses, 'guesses left')
         ## if there aren't any guesses yet, this does nothing
         for g in self.guesses:
-            guess_display(g, self.answer).display()
+            d = guess_display(g, self.answer)
+            d.display()
+            d.display_keyboard(self.guesses)
+        
     
 
     def next_step(self):
