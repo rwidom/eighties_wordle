@@ -36,7 +36,7 @@ class all_the_words:
             with open(file_location,'r') as f:
                 1 == 1
         except:
-            print("Uh-oh, where is the word list file?")
+            print("Uh-oh, where is the word list file? Are you running this from the eighties_wordle directory?")
             return(None)
         return file_location
 

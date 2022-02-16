@@ -1,9 +1,13 @@
 # this little practice project is an homage to WORDLE
 # find the real thing here: https://www.powerlanguage.co.uk/wordle/
 
-# TO DO: more testing, more debugging material, more memory management / scope clarity
+# TO DO: 
+# more testing, more debugging material, more memory management / scope clarity
+# center the guess display
+# add a clear screen before each move
+# improve the "guesses left" display, add an arrow?
 
-from ew_display import guess_display
+from ew_display import *
 from ew_answer import all_the_words
 from ew_guesses import all_the_guesses
 

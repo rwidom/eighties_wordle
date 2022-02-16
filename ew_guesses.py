@@ -1,5 +1,5 @@
 import string
-from ew_display import guess_display
+from ew_display import *
 from ew_answer import all_the_words
  
 
@@ -22,6 +22,7 @@ class all_the_guesses:
         self.guesses = []
         self.goofs = []
         self.game_over = False
+        self.keyboard = keyboard_display(self.answer, [])
 
 
     def _try_again(self, word, instruction):
@@ -79,6 +80,7 @@ class all_the_guesses:
             self._try_again(w, msg)
         else:
             self.guesses += [w]
+            self.keyboard.add_guess(w)
         return None
 
 
@@ -97,7 +99,8 @@ class all_the_guesses:
         for g in self.guesses:
             d = guess_display(g, self.answer)
             d.display()
-            d.display_keyboard(self.guesses)
+        ## display the keyboard
+        self.keyboard.display()
         
     
 
