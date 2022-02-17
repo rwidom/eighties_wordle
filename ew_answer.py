@@ -2,14 +2,14 @@ import random
 
 class all_the_words:
     """
-    Gets a list of 5 letter words and picks one for the user to guess
+    Gets a list of words matching the game word length and picks one for the user to guess
     Also has attributes about where the list comes from and all of that
     """
 
 
     def __init__(self, 
         word_length=5,
-        word_list_file_loc='../Downloads/wordlist.txt'):
+        word_list_file_loc='wordlist.txt'):
         """ Wordle uses five letter words, as far as I know, but in case we want to do
         something different in the future, let's make it possible to set that here.
         All words are upper case. """
@@ -52,7 +52,9 @@ class all_the_words:
             + "\nIt comes from the list of words appearing in at least 10 sources compiled " \
             + "\nby Keith at https://www.keithv.com/software/wlist/" \
             + "\nJust two modifications: dropping words with apostrophes, and dropping the " \
-            + "\nword bitch, because fuck there's enough misogyny, I don't need it in my game."
+            + "\nword bitch, because fuck there's enough misogyny, I don't need it in my game." \
+            + "\nAnd dropping proper nouns and adding stuff as I see fit. Though I'll try and" \
+            + "\nverify things on dictionary.com or something."
         if print:
             print(citation)
             return None
@@ -142,7 +144,7 @@ class all_the_words:
             already guessed by the player, ignoring blanks / _ characters and letters guessed that
             do not appear in my_word and should disqualify some of these words
         '''
-        assert type(self.hint_tree) == dict ## the hint tree has been defined and built globally
+        assert type(self.hint_tree) == dict ## the hint tree has been defined and built
         assert type(my_word) == str
         (l1_key, l2_keys) = self.get_hint_index( my_word )
         hints = self.hint_tree[l1_key][l2_keys[0]]
