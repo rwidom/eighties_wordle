@@ -3,22 +3,33 @@
 
 # TO DO: 
 # more testing, more debugging material, more memory management / scope clarity
-# center the guess display
-# add a clear screen before each move
-# improve the "guesses left" display, add an arrow?
 
 from ew_display import *
 from ew_answer import all_the_words
 from ew_guesses import all_the_guesses
+from time import sleep
 
 ## initialize the game dictionary and choose a word
-# don't have to specify 5 here, but in case I want to change it...
-d = all_the_words(word_length=5)
+w = input("I'm going to pick a word for you to guess, how many letters should it have? Choose a number between 3 and 7:")
+try:
+    assert int(w) >= 3 and int(w) <= 7
+    d = all_the_words(word_length = int(w))
+except:
+    print("OK, let's just go with 5 letters this time.")
+    d = all_the_words(word_length = 5)
+
 ## initialize the object to handle of guesses and feedback
-# don't have to specify 6 here, but in case I want to change it...
-g = all_the_guesses(d, game_length=6)
+c = input("And how many chances do you want to guess the right word? Choose a number between 3 and 20:")
+try:
+    assert int(c) >= 3 and int(c) <= 20
+    g = all_the_guesses(d, game_length = int(c))
+except:
+    print("OK, let's just go with 6 guesses this time.")
+    g = all_the_guesses(d, game_length = 6)
+sleep(2)
+
 ## play the game
 g.print_header()
-g.next_guess()
+g.take_a_guess()
 while not(g.game_over):
     g.next_step()

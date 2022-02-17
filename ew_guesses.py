@@ -49,10 +49,10 @@ class all_the_guesses:
             self.next_step()
         else:
             print(instruction," (You have",remaining_goofs,"remaining warnings.)")
-            self.next_guess()
+            self.take_a_guess()
 
     
-    def next_guess(self):
+    def take_a_guess(self):
         """
         Input: guess is a word that the user typed in
         Output: None
@@ -122,7 +122,7 @@ class all_the_guesses:
     def next_step(self):
         """
         Displays the normal prompt for the next guess and calls the validator.
-        Won't work at the very beginning of the game, need to call print header and next_guess
+        Won't work at the very beginning of the game, need to call print header and take_a_guess
         """
         assert len(self.guesses)>0
         self.print_header()
@@ -133,7 +133,7 @@ class all_the_guesses:
             print("Sorry, that was your last guess. The word was", self.answer, ".")
             self.game_over = True
         else:
-            self.next_guess()
+            self.take_a_guess()
 
 
 
