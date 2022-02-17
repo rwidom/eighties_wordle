@@ -143,6 +143,7 @@ class all_the_words:
             do not appear in my_word and should disqualify some of these words
         '''
         assert type(self.hint_tree) == dict ## the hint tree has been defined and built globally
+        assert type(my_word) == str
         (l1_key, l2_keys) = self.get_hint_index( my_word )
         hints = self.hint_tree[l1_key][l2_keys[0]]
         for l2 in l2_keys[1:]:

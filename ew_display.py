@@ -112,6 +112,13 @@ class guess_display:
         """
         print(str(self))
 
+    def get_correct_letters_plus_blanks(self):
+        """ 
+        given a guess and the answer, returns the characters in the right 
+        place and _ in the other positions
+        """
+        return "".join([ g*(g == a) + '_'*(g != a) for (g, a) in zip(self.guess, self.answer) ])
+
 class keyboard_display:
     """
     Prints the QWERTY keyboard with letters color coded based on their best guess status

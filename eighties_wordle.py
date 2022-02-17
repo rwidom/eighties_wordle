@@ -18,5 +18,7 @@ d = all_the_words(word_length=5)
 # don't have to specify 6 here, but in case I want to change it...
 g = all_the_guesses(d, game_length=6)
 ## play the game
+g.print_header()
+g.next_guess()
 while not(g.game_over):
     g.next_step()

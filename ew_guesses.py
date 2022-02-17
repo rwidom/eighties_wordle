@@ -1,7 +1,16 @@
 import string
 from ew_display import *
 from ew_answer import all_the_words
- 
+from os import system, name
+
+def clear():
+    """ clears the terminal screen across windows and linux systems """
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
 
 class all_the_guesses:
     """
@@ -19,6 +28,7 @@ class all_the_guesses:
         self.answer = game_dictionary.answer
         self.word_length = game_dictionary.word_length
         self.hint_tree = game_dictionary.hint_tree
+        self.hint_list = []
         self.guesses = []
         self.goofs = []
         self.game_over = False
@@ -39,10 +49,10 @@ class all_the_guesses:
             self.next_step()
         else:
             print(instruction," (You have",remaining_goofs,"remaining warnings.)")
-            self._next_guess()
+            self.next_guess()
 
     
-    def _next_guess(self):
+    def next_guess(self):
         """
         Input: guess is a word that the user typed in
         Output: None
@@ -54,15 +64,13 @@ class all_the_guesses:
         w = str(input(':')).upper()
         if w.isnumeric() or w=='*':
             if w=='*':
-                letter_statuses = list(guess_display(self.guesses[-1], self.answer).get_letter_statuses())
-                word_with_blanks = "".join([ char*(status == 'OK') + '_'*(status != 'OK') \
-                    for (char, status) in letter_statuses])
-                print(", ".join(self.game_dictionary.collect_hints(word_with_blanks)))
+                word_with_blanks = guess_display(self.guesses[-1], self.answer) \
+                    .get_correct_letters_plus_blanks()
+                self.hint_list = self.game_dictionary.collect_hints(word_with_blanks)
             elif (int(w)>0 and int(w)<=len(self.guesses)):
-                letter_statuses = list(guess_display(self.guesses[int(w)-1], self.answer).get_letter_statuses())
-                word_with_blanks = "".join([ char*(status == 'OK') + '_'*(status != 'OK') \
-                    for (char, status) in letter_statuses])
-                print(", ".join(self.game_dictionary.collect_hints(word_with_blanks)))
+                word_with_blanks = guess_display(self.guesses[int(w)-1], self.answer) \
+                    .get_correct_letters_plus_blanks()
+                self.hint_list = self.game_dictionary.collect_hints(word_with_blanks)
             else:
                 msg = "For a hint, please enter the single digit turn number for the word you'd like to search."
                 self._try_again(w, msg)
@@ -89,12 +97,19 @@ class all_the_guesses:
         print a line, notice of remaining guesses, and feedback on past guesses
         for the top of each turn 
         """
-        divider = "-" * 4 * self.word_length
+        if len(self.guesses) == 0:
+            _ = clear()
+            print("I'm thinking of a", self.word_length, "letter word. Start guessing!")
+        elif len(self.hint_list)>0:
+            _ = clear()
+            print("Possible words:", ", ".join(self.hint_list))
+        else:
+            _ = clear()
         remaining_guesses = self.game_length - len(self.guesses)
         if remaining_guesses == 1:
-            print(divider, '1 guess left')
+            print('You have 1 guess left.')
         else:
-            print(divider, remaining_guesses, 'guesses left')
+            print('You have', remaining_guesses, 'guesses left.')
         ## if there aren't any guesses yet, this does nothing
         for g in self.guesses:
             d = guess_display(g, self.answer)
@@ -107,21 +122,18 @@ class all_the_guesses:
     def next_step(self):
         """
         Displays the normal prompt for the next guess and calls the validator.
-        """        
-        if len(self.guesses) == 0:
-            print("I'm thinking of a", self.word_length, "letter word. Start guessing!")
-            self.print_header()
-            self._next_guess()
+        Won't work at the very beginning of the game, need to call print header and next_guess
+        """
+        assert len(self.guesses)>0
+        self.print_header()
+        if self.guesses[-1] == self.answer:
+            print('Congratulations!!!')
+            self.game_over = True
+        elif len(self.guesses) == self.game_length:
+            print("Sorry, that was your last guess. The word was", self.answer, ".")
+            self.game_over = True
         else:
-            self.print_header()
-            if self.guesses[-1] == self.answer:
-                print('Congratulations!!!')
-                self.game_over = True
-            elif len(self.guesses) == self.game_length:
-                print("Sorry, that was your last guess. The word was", self.answer, ".")
-                self.game_over = True
-            else:
-                self._next_guess()
+            self.next_guess()
 
 
 
