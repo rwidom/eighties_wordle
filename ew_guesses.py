@@ -4,13 +4,8 @@ from ew_answer import all_the_words
 from os import system, name
 
 def clear():
-    """ clears the terminal screen across windows and linux systems """
-    # for windows
-    if name == 'nt':
-        _ = system('cls')
-    # for mac and linux(here, os.name is 'posix')
-    else:
-        _ = system('clear')
+    """ clears the terminal screen for MacOS (phone and computer) """
+    system('clear')
 
 class all_the_guesses:
     """

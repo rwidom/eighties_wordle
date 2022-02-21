@@ -1,3 +1,7 @@
+from ew_config import ew_config
+(IS_IPHONE, environment) = ew_config()
+if IS_IPHONE:
+    from console import set_color
 class letter_display():
     """ 
     Prints a single letter based on one of four statuses:
@@ -8,6 +12,7 @@ class letter_display():
     """
     def __init__(self, letter=" ", status="?"):
         """ initialize a letter_display with a single letter and status. defaults to a space and unknown status """ 
+        assert type(IS_IPHONE) == bool
         self.set_status(status)
         self.set_letter(letter)
 
@@ -30,37 +35,71 @@ class letter_display():
 
     def get_colors(self):
         """
-        This just returns a constant dict with the ANSI color codes we'll use for different letter statuses
+        This just returns a constant dict with the color codes we'll use for different letter statuses
         """
-        # ANSI color codes described here https://en.wikipedia.org/wiki/ANSI_escape_code
-        # python code reference from https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
-        colors = {
-            # the right letter in the right position -- green background, black text
-            'OK': '\033[42m\033[30m',
-            # a letter in the word, but not in the right position -- yellow background, black text
-            'MOVE': '\033[43m\033[30m',
-            # a letter not in the word -- black background, grey bold text
-            'NO': '\033[40m\033[90m\033[1m',
-            # at the end of a letter to reset the color, or if the letter status is unknown
-            'END': '\033[0m',
-            '?': '\033[0m'
-            }
+        if IS_IPHONE == False: ## running on a laptop
+            # ANSI color codes described here https://en.wikipedia.org/wiki/ANSI_escape_code
+            # python code reference from https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
+            colors = {
+                # the right letter in the right position -- green background, black text
+                'OK': '\033[42m\033[30m',
+                # a letter in the word, but not in the right position -- yellow background, black text
+                'MOVE': '\033[43m\033[30m',
+                # a letter not in the word -- black background, grey bold text
+                'NO': '\033[40m\033[90m\033[1m',
+                # at the end of a letter to reset the color, or if the letter status is unknown
+                'END': '\033[0m',
+                '?': '\033[0m'
+                }
+        elif IS_IPHONE == True:
+            # http://omz-software.com/pythonista/docs/ios/console.html
+            # here, we're returning the (r, g, b) tuple to set the consol color the way we want
+            colors = {
+                # the right letter in the right position -- green 
+                'OK': [0.0, 1.0, 0.0],
+                # a letter in the word, but not in the right position -- yellow 
+                'MOVE': [1.0, 1.0, 0.0],
+                # a letter not in the word -- grey
+                'NO': [0.5, 0.5, 0.5],
+                # at the end of a letter to reset the color, or if the letter status is unknown
+                'END': [1.0, 1.0, 1.0],
+                '?': [1.0, 1.0, 1.0]
+            }      
         return(colors)
 
-    def get_color(self, status):
-        return self.get_colors()[status]
+    def get_color(self):
+        return self.get_colors()[self.get_status()]
 
     def __str__(self):
-        """ put one space on either side of the character and ansi colors for the status on either side of that"""
-        return str(self.get_color(self.get_status()) + ' ' + self.get_letter() + ' ' + self.get_color('END'))
+        """ 
+        On the mac, where ansi colors work, this works really nicely: 
+            Put one space on either side of the character and ansi colors for the status on either side of that
+        On the iphone in pythonista:
+            You lose the color and just get space + letter + space
+        """
+        if IS_IPHONE == False:
+            return self.get_color() + ' ' + self.get_letter() + ' ' + self.get_colors()['END']
+        elif IS_IPHONE == True:
+            return ' ' + self.get_letter() + ' '
 
     def __add__(self, other):
         """ concatenate letters with space in between by adding them in the same way that you can with strings """
         return str(self) + ' ' + str(other) + ' '
 
     def display(self):
-        """ prints the string version of the letter with status coloring """
-        print(self)
+        """ prints the string version of the letter with status coloring, without any new line at the end """
+        if IS_IPHONE == False:
+            ## mac lap top can handle the unicode string
+            print(self, end='')
+        elif IS_IPHONE == True:
+            ## iphone uses a list [r, g, b]
+            ## I can't use ** because set_color won't take named parameters :(
+            c = self.get_color()
+            set_color(c[0], c[1], c[2])
+            print(self, end='')
+            set_color()
+        else:
+            print('Please check the environment and ew_config.py')
 
         
 
@@ -80,6 +119,7 @@ class guess_display:
             put in place some assertions / checks to back up the input assumptions
             write nicer getter and setters
         """
+        assert type(IS_IPHONE) == bool
         self.guess = guess
         self.answer = answer    
 
@@ -110,7 +150,9 @@ class guess_display:
         Input: successful object initialization, with guess and answer strings
         Output: print the display_letters
         """
-        print(str(self))
+        for l in self.get_letter_statuses():
+            l.display()
+        print()            
 
     def get_correct_letters_plus_blanks(self):
         """ 
@@ -124,10 +166,14 @@ class keyboard_display:
     Prints the QWERTY keyboard with letters color coded based on their best guess status
     within the game.
     """
-    keyboard = 'QWERTYUIOP ASDFGHJKL ZXCVBNM'
-    top_border = '\u2554' + ('\u2550'*39) + '\u2557'
-    bottom_border = '\u255A' + ('\u2550'*39) + '\u255D'
+    keyboard = 'QWERTYUIOP ASDFGHJKL ZXCVBNM '
     vertical_border = '\u2551'
+    if IS_IPHONE == False:
+        top_border = '\u2554' + ('\u2550'*39) + '\u2557'
+        bottom_border = '\u255A' + ('\u2550'*39) + '\u255D'
+    elif IS_IPHONE == True:
+        top_border = '\u2554' + ('\u2550'*30) + '\u2557'
+        bottom_border = '\u255A' + ('\u2550'*30) + '\u255D'
     
     def __init__(self, answer, guesses = []):
         """
@@ -139,7 +185,8 @@ class keyboard_display:
             put in place some assertions / checks to back up the input assumptions
             write nicer getter and setters
         """
-        assert type(answer)==str
+        assert type(answer) == str
+        assert type(IS_IPHONE) == bool
         self.guesses = guesses
         self.answer = answer
         self.keyboard = self.get_letter_displays()
@@ -152,7 +199,7 @@ class keyboard_display:
         """ 
         Input: List of words guessed
         Output: A dictionary where the keys are every letter that has been guessed and the 
-        values are the positions where those letter has appeared
+        values are the positions where the letter has appeared
         """
         letter_locations = dict()
         for word in self.guesses:
@@ -211,4 +258,39 @@ class keyboard_display:
         Input: successful object initialization, with guess list and answer strings
         Output: print the display_letters
         """
-        print(str(self))
+        if IS_IPHONE == False:
+            print(self)
+        elif IS_IPHONE == True:
+            line = 1
+            line_padding = {1: ('', ''), 2: ('  ', ' '), 3:('     ', '    ')}
+            line_start = True
+            print(keyboard_display.top_border)
+            for k in self.keyboard:
+                ## beginning of line padding if needed, no matter the letter
+                if line_start:
+                    print(keyboard_display.vertical_border + line_padding[line][0], end='')
+                    line_start = False
+                ## line break in the keyboard string, print the end of the line and reset line_start
+                if k.get_letter() == ' ':
+                    print(line_padding[line][1] + keyboard_display.vertical_border)
+                    line += 1
+                    line_start = True
+                ## just print the letter
+                else:
+                    k.display()
+            print(keyboard_display.bottom_border)
+
+
+if __name__ == '__main__':
+    a = letter_display("A", "OK")
+    a.display()
+    print(' -- ok')
+    b = letter_display("B", "MOVE")
+    b.display()
+    print(' -- move')
+    c = letter_display("C", "NO")
+    c.display()
+    print(' -- no')
+    d = letter_display("D", "?")
+    d.display()
+    print(' -- ?')

@@ -1,11 +1,12 @@
 import random
+from ew_config import ew_config
+(IS_IPHONE, environment) = ew_config()
 
 class all_the_words:
     """
     Gets a list of words matching the game word length and picks one for the user to guess
     Also has attributes about where the list comes from and all of that
     """
-
 
     def __init__(self, 
         word_length=5,
@@ -67,9 +68,11 @@ class all_the_words:
         Gets the full list of valid words, and make it accessible outside the object 
         Words will all be upper case
         """
-        with open(self.file_location,'r') as f:
-            all_words = f.read().split('\n')
-            word_list = [w.upper() for w in all_words if len(w)==self.word_length]
+        word_list = []
+        with open(self.file_location,'r', encoding='utf-8') as f:
+        	for word in f:
+        	  	if len(word) == self.word_length + 1:       # +1 for the line break
+        	  		word_list += [ word.upper().strip() ]
         return word_list
 
 
@@ -153,3 +156,12 @@ class all_the_words:
         hints = list(hints)
         hints.sort()
         return(hints)
+
+if __name__ == '__main__':
+	  a = all_the_words()
+	  w = a.get_words()
+	  print('len', len(w))
+	  print('min', min(w))
+	  print('max', max(w))
+	  print(random.sample(w, 20))
+
