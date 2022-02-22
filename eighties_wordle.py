@@ -5,8 +5,10 @@ from time import sleep
 from ew_display import *
 from ew_answer import all_the_words
 from ew_guesses import *
+from ew_config import clear
 
 while True:
+    clear()
     ## initialize the game dictionary and choose a word
     w = input("I'm going to pick a word for you to guess, how many letters should it have? Choose a number between 3 and 7:")
     try:

@@ -11,8 +11,8 @@ def ew_config():
     if 'iPhone' in platform.platform():
         environment['machine'] = 'iPhone'
         IS_IPHONE = True
-        import console
-        console.set_font('courier')
+        from console import set_font
+        set_font('courier')
     elif 'mac' in platform.platform():
         environment['machine'] = 'Mac'
         IS_IPHONE = False
@@ -26,3 +26,16 @@ def ew_config():
     ## this matters for display colors
     assert environment['machine'] != 'unknown' 
     return (IS_IPHONE, environment)
+
+def clear():
+    """ clears the terminal screen for MacOS (phone and computer) """
+    (IS_IPHONE, environment) = ew_config()
+    if IS_IPHONE == True:
+        import console
+        console.clear()
+    elif IS_IPHONE == False:
+        os.system('clear')
+    else:
+        print("Uh-oh, this isn't a supported platform.")
+
+

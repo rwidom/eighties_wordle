@@ -1,11 +1,7 @@
 import string
 from ew_display import *
+from ew_config import *
 from ew_answer import all_the_words
-from os import system, name
-
-def clear():
-    """ clears the terminal screen for MacOS (phone and computer) """
-    system('clear')
 
 class all_the_guesses:
     """
@@ -111,8 +107,6 @@ class all_the_guesses:
             d.display()
         ## display the keyboard
         self.keyboard.display()
-        
-    
 
     def next_step(self):
         """
