@@ -121,21 +121,66 @@ class guess_display:
         """
         assert type(IS_IPHONE) == bool
         self.guess = guess
-        self.answer = answer    
+        self.answer = answer  
+
+    def get_string_dict(self, input_string=False):
+        """
+        Returns a dict with the key of each letter, and values of a list of positions for that letter
+        By default returns a dict for the answer, but can take any string as a parameter 
+        """
+        ## initialize the dictionary
+        d = dict()
+        ## check for the input string
+        if input_string==False:
+            input_string = self.answer
+        else:
+            assert type(input_string) == str
+        ## loop through to pick up locations
+        for (location, letter) in enumerate(input_string):
+            if letter in d:
+                d[letter] += [location]
+            else:
+                d[letter] = [location]
+        ## and we're done!
+        return d
+        
 
     def get_letter_statuses(self):
         """
         Input: successful object initialization, with guess and answer strings
         Output: a list of letter_displays with appropriate statuses
         """
-        letter_displays = []
-        for (location, letter) in enumerate(self.guess):
-            if letter == self.answer[location]:
-                letter_displays += [ letter_display(letter, 'OK') ]
-            elif letter in self.answer:
-                letter_displays += [ letter_display(letter, 'MOVE') ]
-            else:
-                letter_displays += [ letter_display(letter, 'NO') ]
+        if self.guess == self.answer:
+            letter_displays = [letter_display(letter, 'OK') for letter in self.guess]
+        else:
+            ## get guess and answer dictionaries
+            guess_dict = self.get_string_dict(self.guess)
+            answer_dict = self.get_string_dict()
+            letter_tuple_list = []
+            ## loop through guess letters to get locations by status
+            for (letter, locations) in guess_dict.items():
+                ok = []
+                move = []
+                no = []
+                if letter in answer_dict:
+                    answer_locations = answer_dict[letter]
+                    ## file the ones in the right location
+                    ok = list(set(locations).intersection(set(answer_locations)))
+                    ## what are the locations we guessed, excluding the ones that were correct?
+                    all_moves = list(set(locations).difference(set(answer_locations)))
+                    ## how many of those do we actually want to highlight to move?
+                    num_to_move = min( len(answer_locations) - len(ok), len(all_moves) )
+                    ## put them where they belong for move vs no statuses
+                    move = all_moves[:num_to_move]
+                    no = all_moves[num_to_move:]
+                else:
+                    no = locations
+                letter_tuple_list += [ (location, letter_display(letter,'OK')) for location in ok ]
+                letter_tuple_list += [ (location, letter_display(letter,'MOVE')) for location in move ]
+                letter_tuple_list += [ (location, letter_display(letter,'NO')) for location in no ]
+            ## convert the tuple list back into a list
+            letter_tuple_list.sort()
+            letter_displays = [ ld for (i, ld) in letter_tuple_list ]
         return letter_displays
 
     def __str__(self):
