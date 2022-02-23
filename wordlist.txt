@@ -4578,7 +4578,6 @@ beckoning
 beckons
 becks
 beckwith
-becky
 become
 becomes
 becoming
@@ -8728,11 +8727,7 @@ charla
 charlatan
 charlatans
 charlemagne
-charlene
-charles
 charleston
-charley
-charlie
 charlies
 charlotte
 charlottesville
@@ -16824,7 +16819,6 @@ edelman
 edelweiss
 edema
 eden
-edgar
 edge
 edged
 edger
@@ -28680,9 +28674,6 @@ johannesburg
 johansen
 johansson
 john
-johnathan
-johnnie
-johnny
 johns
 johnsen
 johnson
@@ -32428,8 +32419,6 @@ martinique
 martinis
 martins
 marts
-marty
-martyn
 martyr
 martyrdom
 martyred
@@ -32443,13 +32432,9 @@ marvellous
 marvelous
 marvelously
 marvels
-marvin
-marx
 marxism
 marxist
 marxists
-mary
-maryann
 maryland
 marys
 mas
@@ -38688,7 +38673,6 @@ peg
 pegasus
 pegged
 pegging
-peggy
 pegs
 peine
 pejorative
@@ -46355,7 +46339,6 @@ sami
 samir
 samira
 samizdat
-sammy
 samoa
 samoan
 samos
