@@ -69,7 +69,7 @@ class all_the_guesses:
             turn = 0
             if len(valid_turns)==0:
                 self.print_header()
-                print("Sorry, you need a turn with at least one letter in the right position to get a hint.")
+                print("Sorry, you need a turn with at least one thing in the right position to get a hint.")
                 self.take_a_guess()
             elif w=='*':
                 turn = valid_turns[-1]
