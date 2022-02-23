@@ -54,17 +54,32 @@ class all_the_guesses:
         """
         w = str(input(':')).upper()
         if w.isnumeric() or w=='*':
-            if w=='*':
-                word_with_blanks = guess_display(self.guesses[-1], self.answer) \
-                    .get_correct_letters_plus_blanks()
-                self.hint_list = self.game_dictionary.collect_hints(word_with_blanks)
-            elif (int(w)>0 and int(w)<=len(self.guesses)):
-                word_with_blanks = guess_display(self.guesses[int(w)-1], self.answer) \
-                    .get_correct_letters_plus_blanks()
-                self.hint_list = self.game_dictionary.collect_hints(word_with_blanks)
+            ## only look at turns with valid words and at least one ok letter
+            valid_turns = []
+            for (i, guess) in enumerate(self.guesses):
+                if guess in self.all_words and \
+                    max( [ g==a for (g, a) in zip(guess, self.answer) ] ):
+                    valid_turns += [ i + 1 ]
+            ## get a possible index for the guesses list
+            turn = 0
+            if len(valid_turns)==0:
+                self.print_header()
+                print("Sorry, you need a turn with at least one letter in the right position to get a hint.")
+                self.take_a_guess()
+            elif w=='*':
+                turn = valid_turns[-1]
+            elif int(w) in valid_turns:
+                turn = int(w)
             else:
-                msg = "For a hint, please enter the single digit turn number for the word you'd like to search."
-                self._try_again(w, msg)
+                self.print_header()
+                print("For a hint, please choose from one of these turns -- "+", ".join([str(t) for t in valid_turns]))
+                self.take_a_guess()
+            ## generate the hint list
+            if turn > 0:
+                word_with_blanks = guess_display(self.guesses[turn - 1], self.answer) \
+                    .get_correct_letters_plus_blanks()
+                print("turn:",turn,"here's word with blanks:",word_with_blanks)
+                self.hint_list = self.game_dictionary.collect_hints(word_with_blanks)
         elif not(w.isalpha()):
             msg = 'Please enter '+str(self.word_length)+' letters, no symbols or spaces.'
             self._try_again(w, msg)
