@@ -14,5 +14,9 @@ I've used starting python in a directory called "eighties-wordle" as a standin f
 - wordlist.txt
 
 That's not the most user-friendly pythonic approach, but MVP and all that. :)
+
+## What is a word?
+
+I'm working on adding a math version, because my 9-year-old friend/G-ddaughter/neice-in-spirit person told me that her teacher had them play wordle with math / equations and that seemed fun to both her and me. But it does raise questions in the program about what counts as a valid character for a guess, and this would come up if anyone wanted to adapt this for a language other than English anyway. So here are the things I'm trying to make reserver characters in this game: '*' (for users to ask for hints) and '_' (for the program to indicate unknown characters when collecting hints). And I guess I'm assuming that there won't be any games with more than 99 turns or any valid "words" with fewer than 3 characters, because if you want to ask for a hint for a specific turn, you can still do that even in the equations version of the game.
 ## Why Eighties?
 I'm calling it Eighties Wordle, because it's all text based.

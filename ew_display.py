@@ -211,15 +211,7 @@ class keyboard_display:
     Prints the QWERTY keyboard with letters color coded based on their best guess status
     within the game.
     """
-    keyboard = 'QWERTYUIOP ASDFGHJKL ZXCVBNM '
-    vertical_border = '\u2551'
-    if IS_IPHONE == False:
-        top_border = '\u2554' + ('\u2550'*39) + '\u2557'
-        bottom_border = '\u255A' + ('\u2550'*39) + '\u255D'
-    elif IS_IPHONE == True:
-        top_border = '\u2554' + ('\u2550'*30) + '\u2557'
-        bottom_border = '\u255A' + ('\u2550'*30) + '\u255D'
-    
+
     def __init__(self, answer, guesses = []):
         """
         Input: at least an answer, in case there aren't any guesses yet, but ideally an
@@ -227,11 +219,24 @@ class keyboard_display:
             alphas only) happens outside of the printer object.
         Output: successfully initializes the object
         TO DO: 
-            put in place some assertions / checks to back up the input assumptions
             write nicer getter and setters
         """
         assert type(answer) == str
         assert type(IS_IPHONE) == bool
+
+        ## standards for the whole class, written here so they can be easily overwritten in the subclass
+        self.keys = 'QWERTYUIOP ASDFGHJKL ZXCVBNM '
+        self.vertical_border = '\u2551'
+        if IS_IPHONE == False:
+            self.top_border = '\u2554' + ('\u2550'*40) + '\u2557'
+            self.bottom_border = '\u255A' + ('\u2550'*40) + '\u255D'
+            self.line_padding = {1: ('', ''), 2: ('  ', '  '), 3:('      ', '      ')}
+        elif IS_IPHONE == True:
+            self.top_border = '\u2554' + ('\u2550'*30) + '\u2557'
+            self.bottom_border = '\u255A' + ('\u2550'*30) + '\u255D'
+            self.line_padding = {1: ('', ''), 2: ('  ', ' '), 3:('     ', '    ')}
+
+        ## for this specific instance
         self.guesses = guesses
         self.answer = answer
         self.keyboard = self.get_letter_displays()
@@ -262,7 +267,7 @@ class keyboard_display:
         """
         letter_displays = []
         guess_locations = self.get_letter_locations()
-        for letter in keyboard_display.keyboard:
+        for letter in self.keys:
             if letter in guess_locations:
                 ## guessed but not in the answer anywhere
                 if letter not in self.answer:
@@ -282,21 +287,27 @@ class keyboard_display:
     def __str__(self):
         """
         Input: successful object initialization, with guess list and answer strings
-        Output: print the display_letters
+        Output: printable characters (with color on mac, b/w on iphone)
         """
-        line = 0
-        lines = ['', '', '']
+        lines = [ self.top_border ] \
+            + ['']*len(self.line_padding) \
+            + [ self.bottom_border ]
+        line = 1
+        line_start = True
         for k in self.keyboard:
-            if k.get_letter()==' ':
+            ## beginning of line padding if needed, no matter the letter
+            if line_start:
+                lines[line] += self.vertical_border + self.line_padding[line][0]
+                line_start = False
+            ## line break in the keyboard string, print the end of the line and reset line_start
+            if k.get_letter() == ' ':
+                lines[line] += self.line_padding[line][1] + self.vertical_border
                 line += 1
+                line_start = True
+            ## just print the letter
             else:
                 lines[line] += str(k) + ' '
-        return '\n' + keyboard_display.top_border \
-            + '\n' + keyboard_display.vertical_border + lines[0][0:-1] + keyboard_display.vertical_border \
-            + '\n' + keyboard_display.vertical_border + '  ' + lines[1][0:-1] + '  ' + keyboard_display.vertical_border \
-            + '\n' + keyboard_display.vertical_border + '      ' + lines[2][0:-1] + '      ' + keyboard_display.vertical_border \
-            + '\n' + keyboard_display.bottom_border \
-            + '\n'
+        return '\n'.join(lines)
 
     def display(self):
         """
@@ -307,26 +318,51 @@ class keyboard_display:
             print(self)
         elif IS_IPHONE == True:
             line = 1
-            line_padding = {1: ('', ''), 2: ('  ', ' '), 3:('     ', '    ')}
             line_start = True
-            print(keyboard_display.top_border)
+            print(self.top_border)
             for k in self.keyboard:
                 ## beginning of line padding if needed, no matter the letter
                 if line_start:
-                    print(keyboard_display.vertical_border + line_padding[line][0], end='')
+                    print(self.vertical_border + line_padding[line][0], end='')
                     line_start = False
                 ## line break in the keyboard string, print the end of the line and reset line_start
                 if k.get_letter() == ' ':
-                    print(line_padding[line][1] + keyboard_display.vertical_border)
+                    print(line_padding[line][1] + self.vertical_border)
                     line += 1
                     line_start = True
                 ## just print the letter
                 else:
                     k.display()
-            print(keyboard_display.bottom_border)
+            print(self.bottom_border)
+class numpad_display(keyboard_display):
+
+    def __init__(self, answer, guesses = []):
+
+        assert type(answer) == str
+        assert type(IS_IPHONE) == bool
+
+        ## standards for the whole class
+        self.keys = '123+ 456- 789x 0/= '
+        self.vertical_border = '\u2551'
+        if IS_IPHONE == False:
+            self.top_border = '\u2554' + ('\u2550'*17) + '\u2557'
+            self.bottom_border = '\u255A' + ('\u2550'*17) + '\u255D'
+            self.line_padding = {1: (' ', ''), 2: (' ', ''), 3:(' ', ''), 4:('   ','  ')}
+        elif IS_IPHONE == True:
+            self.top_border = '\u2554' + ('\u2550'*9) + '\u2557'
+            self.bottom_border = '\u255A' + ('\u2550'*9) + '\u255D'
+            self.line_padding = {1: ('', ''), 2: ('', ''), 3:('', ''), 4:('  ','')}
+
+        ## for this specific instance
+        self.guesses = guesses
+        self.answer = answer
+        self.keyboard = self.get_letter_displays()
 
 
 if __name__ == '__main__':
+    print("-"*80)
+    print("LETTER DISPLAY")
+    print("-"*80)
     a = letter_display("A", "OK")
     a.display()
     print(' -- ok')
@@ -339,3 +375,16 @@ if __name__ == '__main__':
     d = letter_display("D", "?")
     d.display()
     print(' -- ?')
+
+    print("-"*80)
+    print("KEYBOARD DISPLAY")
+    print("-"*80)
+    k = keyboard_display('PIPER',['AGAIN','PLEASE','QUEST'])
+    k.display()
+    
+    print("-"*80)
+    print("NUMPAD DISPLAY")
+    print("-"*80)
+    n = numpad_display('20+30=50',['20+20=40','70-40=30'])
+    n.display()
+    

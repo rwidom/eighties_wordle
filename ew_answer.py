@@ -92,7 +92,7 @@ class all_the_words:
         navigating the hint tree
         """
         l1_key = len(word)
-        l2_keys = [ (i, word[i]) for i in range(l1_key) if word[i].isalpha() ]
+        l2_keys = [ (i, word[i]) for i in range(l1_key) if word[i] != '_' ]
         return (l1_key, l2_keys)
 
     def merge_hint_dicts(self, a, b):
@@ -157,11 +157,63 @@ class all_the_words:
         hints.sort()
         return(hints)
 
+class all_the_equations(all_the_words):
+    def __init__(self, 
+        word_length=7):
+        ## defaults and passed parameters
+        self.word_length = word_length
+        # ## translating math to letters
+        # num_chars = '0123456789+-x/='
+        # abc_chars = 'ABCDEFGHIJKLMNO'
+        # self.to_alpha = dict(zip(num_chars, abc_chars))
+        # self.to_math = dict(zip(abc_chars, num_chars))
+        ## massaging / generation
+        self.word_list = self.get_words()
+        self.answer = self._choose_answer()
+        self.hint_tree = self._build_hint_tree()
+
+    # def translate_to_alpha(self, s):
+    #     assert type(s) == str
+    #     #assert min([c in self.to_alpha for c in s])
+    #     return ''.join([self.to_alpha[c] for c in s])
+
+    # def translate_to_math(self, s):
+    #     assert type(s) == str
+    #     #assert min([c in self.to_math for c in s])
+    #     return ''.join([self.to_math[c] for c in s])
+
+    def get_words(self):
+        word_list = []
+        for a in range(150):
+            for b in range(150):
+                word_list += [ str(a)+'+'+str(b)+'='+str(a + b) ]
+                word_list += [ str(a)+'-'+str(b)+'='+str(a - b) ]
+                word_list += [ str(a)+'x'+str(b)+'='+str(a * b) ]
+                if b > 0:
+                    if float(a) / float(b) == int(a / b):
+                        word_list += [ str(a)+'/'+str(b)+'='+str(int(a / b)) ]
+        return [w for w in word_list if len(w) == self.word_length]
+
 if __name__ == '__main__':
-	  a = all_the_words()
-	  w = a.get_words()
-	  print('len', len(w))
-	  print('min', min(w))
-	  print('max', max(w))
-	  print(random.sample(w, 20))
+
+    print("="*80)
+    print("REGULAR WORDS")
+    print("="*80)
+    a = all_the_words()
+    w = a.get_words()
+    print('len:', len(w))
+    print('min:', min(w))
+    print('max:', max(w))
+    print('sample words:',', '.join(random.sample(w, 20)))
+
+    print("="*80)
+    print("MATH VERSION")
+    print("="*80)
+    m = all_the_equations(word_length=5)
+    w = [m.translate_to_math(i) for i in m.get_words()]
+    print('len:', len(w))
+    print('min:', min(w))
+    print('max:', max(w))
+    print('sample equations:',', '.join(random.sample(w, 20)))
+    print('sample letter combos:',', '.join(random.sample(m.get_words(), 20)))
 

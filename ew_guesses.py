@@ -11,7 +11,8 @@ class all_the_guesses:
         user typing in guesses
     """
 
-    def __init__(self, game_dictionary, game_length = 6):
+    def __init__(self, game_dictionary, game_length = 6, game_type='words'):
+        assert game_type in ('words', 'equations')
 
         self.game_length = game_length
         self.game_dictionary = game_dictionary
@@ -23,7 +24,11 @@ class all_the_guesses:
         self.guesses = []
         self.goofs = []
         self.game_over = False
-        self.keyboard = keyboard_display(self.answer, [])
+        self.game_type = game_type
+        if game_type=='words':
+            self.keyboard = keyboard_display(self.answer, [])
+        elif game_type=='equations':
+            self.keyboard = numpad_display(self.answer, [])
 
 
     def _try_again(self, word, instruction):
@@ -53,7 +58,7 @@ class all_the_guesses:
             - If the word *IS* valid, we add it to the list of guesses in the last position.
         """
         w = str(input(':')).upper()
-        if w.isnumeric() or w=='*':
+        if (w.isnumeric() and len(w)<=2) or w=='*':
             ## only look at turns with valid words and at least one ok letter
             valid_turns = []
             for (i, guess) in enumerate(self.guesses):
@@ -78,16 +83,12 @@ class all_the_guesses:
             if turn > 0:
                 word_with_blanks = guess_display(self.guesses[turn - 1], self.answer) \
                     .get_correct_letters_plus_blanks()
-                print("turn:",turn,"here's word with blanks:",word_with_blanks)
                 self.hint_list = self.game_dictionary.collect_hints(word_with_blanks)
-        elif not(w.isalpha()):
-            msg = 'Please enter '+str(self.word_length)+' letters, no symbols or spaces.'
-            self._try_again(w, msg)
         elif len(w) != self.word_length:
-            msg = 'Please enter a '+str(self.word_length)+'-letter word.'
+            msg = 'Please enter a '+str(self.word_length)+'-character guess.'
             self._try_again(w, msg)
         elif w in self.guesses:
-            msg = "Please enter a word you haven't already guessed."
+            msg = "Please enter something you haven't already guessed."
             self._try_again(w, msg)
         elif w not in self.all_words:
             msg = 'Sorry, ' + w + ' is not in our dictionary. Please try again.'
@@ -105,10 +106,12 @@ class all_the_guesses:
         """
         if len(self.guesses) == 0:
             _ = clear()
-            print("I'm thinking of a", self.word_length, "letter word. Start guessing!")
+            print("I'm thinking of a", self.word_length, \
+                (self.game_type == 'words')*"letter word." + (self.game_type == 'equations')*"digit equation.", \
+                "Start guessing!")
         elif len(self.hint_list)>0:
             _ = clear()
-            print("Possible words:", ", ".join(self.hint_list))
+            print("Possibilities:", ", ".join(self.hint_list))
         else:
             _ = clear()
         remaining_guesses = self.game_length - len(self.guesses)
