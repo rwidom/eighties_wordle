@@ -57,7 +57,10 @@ class all_the_guesses:
             it is added to the list of goofs, we ask the user to try again, and we check again.
             - If the word *IS* valid, we add it to the list of guesses in the last position.
         """
-        w = str(input(':')).upper()
+        if self.game_type == 'words':
+            w = str(input(':')).upper()
+        elif self.game_type == 'equations':
+            w = ''.join([c for c in str(input(':')) if c != ' '])
         if (w.isnumeric() and len(w)<=2) or w=='*':
             ## only look at turns with valid words and at least one ok letter
             valid_turns = []

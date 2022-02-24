@@ -1,0 +1,85 @@
+{
+    "game_type": {
+        "value": "equations",
+        "desc": "Type of Game",
+        "question": "Do you want to play wordle with words or equations?",
+        "options": [
+            "words",
+            "equations"
+        ]
+    },
+    "word_length_equations": {
+        "value": 9,
+        "desc": "Equation Length",
+        "question": "I'm going to pick an equation for you to guess, how many digits should it have, including an = and an operator?",
+        "options": [
+            5,
+            6,
+            7,
+            8,
+            9
+        ]
+    },
+    "game_length_equations": {
+        "value": 4,
+        "desc": "Equation Chances",
+        "question": "How many chances do you want to guess the right equation?",
+        "options": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+        ]
+    },
+    "word_length_words": {
+        "value": 5,
+        "desc": "Word Length",
+        "question": "I'm going to pick a word for you to guess, how many letters should it have?",
+        "options": [
+            3,
+            4,
+            5,
+            6,
+            7
+        ]
+    },
+    "game_length_words": {
+        "value": 6,
+        "desc": "Word Chances",
+        "question": "How many chances do you want to guess the right word?",
+        "options": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+        ]
+    }
+}

@@ -80,7 +80,7 @@ class letter_display():
         if IS_IPHONE == False:
             return self.get_color() + ' ' + self.get_letter() + ' ' + self.get_colors()['END']
         elif IS_IPHONE == True:
-            return ' ' + self.get_letter() + ' '
+            return self.get_letter() + ' '
 
     def __add__(self, other):
         """ concatenate letters with space in between by adding them in the same way that you can with strings """
@@ -232,9 +232,9 @@ class keyboard_display:
             self.bottom_border = '\u255A' + ('\u2550'*40) + '\u255D'
             self.line_padding = {1: ('', ''), 2: ('  ', '  '), 3:('      ', '      ')}
         elif IS_IPHONE == True:
-            self.top_border = '\u2554' + ('\u2550'*30) + '\u2557'
-            self.bottom_border = '\u255A' + ('\u2550'*30) + '\u255D'
-            self.line_padding = {1: ('', ''), 2: ('  ', ' '), 3:('     ', '    ')}
+            self.top_border = '\u2554' + ('\u2550'*21) + '\u2557'
+            self.bottom_border = '\u255A' + ('\u2550'*21) + '\u255D'
+            self.line_padding = {1: (' ', ''), 2: ('  ', ' '), 3:('    ', '   ')}
 
         ## for this specific instance
         self.guesses = guesses
@@ -323,11 +323,11 @@ class keyboard_display:
             for k in self.keyboard:
                 ## beginning of line padding if needed, no matter the letter
                 if line_start:
-                    print(self.vertical_border + line_padding[line][0], end='')
+                    print(self.vertical_border + self.line_padding[line][0], end='')
                     line_start = False
                 ## line break in the keyboard string, print the end of the line and reset line_start
                 if k.get_letter() == ' ':
-                    print(line_padding[line][1] + self.vertical_border)
+                    print(self.line_padding[line][1] + self.vertical_border)
                     line += 1
                     line_start = True
                 ## just print the letter
@@ -351,7 +351,7 @@ class numpad_display(keyboard_display):
         elif IS_IPHONE == True:
             self.top_border = '\u2554' + ('\u2550'*9) + '\u2557'
             self.bottom_border = '\u255A' + ('\u2550'*9) + '\u255D'
-            self.line_padding = {1: ('', ''), 2: ('', ''), 3:('', ''), 4:('  ','')}
+            self.line_padding = {1: (' ', ''), 2: (' ', ''), 3:(' ', ''), 4:('   ','')}
 
         ## for this specific instance
         self.guesses = guesses
