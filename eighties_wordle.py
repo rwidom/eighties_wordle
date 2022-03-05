@@ -17,7 +17,8 @@ while True:
     ## initialize the game dictionary and choose a word / equation
     ## initialize the object to handle of guesses and feedback
     if config.get_game_type() == 'words':
-        d = all_the_words(word_length = config.get_value('word_length_words'))
+        d = all_the_words(word_length = config.get_value('word_length_words'),
+            word_list_file_loc='twl06.txt')
         g = all_the_guesses(d, \
             game_length = config.get_value('game_length_words'), \
             game_type = config.get_game_type())
