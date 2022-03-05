@@ -30,7 +30,6 @@ class all_the_guesses:
         elif game_type=='equations':
             self.keyboard = numpad_display(self.answer, [])
 
-
     def _try_again(self, word, instruction):
         """
         what to do when there is a goof
@@ -107,16 +106,19 @@ class all_the_guesses:
         print a line, notice of remaining guesses, and feedback on past guesses
         for the top of each turn 
         """
+        ## get the appropriate clear screen mechanism for this platform
+        config = ew_configuration()
+        ## do the printing
         if len(self.guesses) == 0:
-            _ = clear()
+            config.clear()
             print("I'm thinking of a", self.word_length, \
                 (self.game_type == 'words')*"letter word." + (self.game_type == 'equations')*"digit equation.", \
                 "Start guessing!")
         elif len(self.hint_list)>0:
-            _ = clear()
+            config.clear()
             print("Possibilities:", ", ".join(self.hint_list))
         else:
-            _ = clear()
+            config.clear()
         remaining_guesses = self.game_length - len(self.guesses)
         if remaining_guesses == 1:
             print('You have 1 guess left.')

@@ -7,22 +7,28 @@ from ew_answer import *
 from ew_guesses import *
 from ew_config import *
 
+config = ew_configuration()
+
 while True:
-    clear()
+    config.clear()
     ## choose the type of game, length of thing to guess, and number of changes
-    settings = check_settings()
+    config.check_settings()
 
     ## initialize the game dictionary and choose a word / equation
     ## initialize the object to handle of guesses and feedback
-    t = settings['game_type']['value']
-    if t == 'words':
-        d = all_the_words(word_length = settings['word_length_words']['value'])
-        g = all_the_guesses(d, game_length = settings['game_length_words']['value'], game_type = t)
-    elif t == 'equations':
-        d = all_the_equations(word_length = settings['word_length_equations']['value'])
-        g = all_the_guesses(d, game_length = settings['game_length_equations']['value'], game_type = t)
+    if config.get_game_type() == 'words':
+        d = all_the_words(word_length = config.get_value('word_length_words'))
+        g = all_the_guesses(d, \
+            game_length = config.get_value('game_length_words'), \
+            game_type = config.get_game_type())
+    elif config.get_game_type() == 'equations':
+        d = all_the_equations(word_length = config.get_value('word_length_equations'), \
+            max_value = config.get_value('max_value_equations'))
+        g = all_the_guesses(d, \
+            game_length = config.get_value('game_length_equations'), \
+            game_type = config.get_game_type())
     else:
-        print("Uh-oh, where did game type",t,"come from?")
+        print("Uh-oh, where did game type",config.get_game_type(),"come from?")
         exit()
 
     ## play the game
@@ -35,7 +41,7 @@ while True:
     p = input("Want to play again? (Yes, Y, and You betcha, with any capitalization, will all work):")
     if p.lower() in ('yes','y','you betcha'):
         print("Yay! Me too!")
-        sleep(2)
+        sleep(1)
     else:
         print("That's cool, I didn't want to either.")
         exit()

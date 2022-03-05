@@ -1,6 +1,7 @@
 import random
-from ew_config import ew_config
-(IS_IPHONE, environment) = ew_config()
+from ew_config import ew_platform
+p = ew_platform()
+assert p.is_correct_directory()
 
 class all_the_words:
     """
@@ -88,12 +89,9 @@ class all_the_words:
 
     def get_hint_index(self, word):
         """ 
-        Generates an index -- nested tuple -- including a list of position / letter tuples for 
-        navigating the hint tree
+        Generates an index a list of position / letter tuples for navigating the hint tree
         """
-        l1_key = len(word)
-        l2_keys = [ (i, word[i]) for i in range(l1_key) if word[i] != '_' ]
-        return (l1_key, l2_keys)
+        return [ (i, word[i]) for i in range(self.word_length) if word[i] != '_' ]
 
     def merge_hint_dicts(self, a, b):
         """ 
@@ -113,11 +111,9 @@ class all_the_words:
         Takes the list of words, and transforms it into a hierarchy to use for quickly finding hints.
         The idea is from here: https://wdi.centralesupelec.fr/1CC1000/Hangman
 
-        The hint tree is a dict of dicts:
-        - first layer key is the number of characters in the word
-        - first layer value is the second layer dict
-        - second layer key is a tuple of character and position
-        - second layer value is a set of words with that character and position
+        The hint tree is a dict:
+        - key is a tuple of character and position
+        - value is a set of words with that character and position
 
         The hint then is the intersection of all of the words with the known character, position pairs
 
@@ -130,12 +126,8 @@ class all_the_words:
         assert type(self.word_list) == list
         hint_tree = {}
         for w in self.word_list:
-            (l1_key, l2_keys) = self.get_hint_index(w)
-            add_leaves = dict.fromkeys(l2_keys, set([w]))
-            if l1_key in hint_tree:
-                hint_tree[l1_key] = self.merge_hint_dicts(hint_tree[l1_key], add_leaves)
-            else:
-                hint_tree[l1_key] = add_leaves
+            add_leaves = dict.fromkeys(self.get_hint_index(w), set([w]))
+            hint_tree = self.merge_hint_dicts(hint_tree, add_leaves)
         return(hint_tree)
 
     def collect_hints(self, my_word):
@@ -149,50 +141,62 @@ class all_the_words:
         '''
         assert type(self.hint_tree) == dict ## the hint tree has been defined and built
         assert type(my_word) == str
-        (l1_key, l2_keys) = self.get_hint_index( my_word )
-        hints = self.hint_tree[l1_key][l2_keys[0]]
-        for l2 in l2_keys[1:]:
-            hints = set.intersection(hints, self.hint_tree[l1_key][l2])
+        hint_keys = self.get_hint_index( my_word )
+        hints = self.hint_tree[hint_keys[0]]
+        for k in hint_keys[1:]:
+            hints = set.intersection(hints, self.hint_tree[k])
         hints = list(hints)
         hints.sort()
         return(hints)
 
 class all_the_equations(all_the_words):
     def __init__(self, 
-        word_length=7):
+        word_length = 7,
+        max_value = 150):
         ## defaults and passed parameters
         self.word_length = word_length
-        # ## translating math to letters
-        # num_chars = '0123456789+-x/='
-        # abc_chars = 'ABCDEFGHIJKLMNO'
-        # self.to_alpha = dict(zip(num_chars, abc_chars))
-        # self.to_math = dict(zip(abc_chars, num_chars))
+        self.max_value = max_value
         ## massaging / generation
-        self.word_list = self.get_words()
-        self.answer = self._choose_answer()
+        (self.word_list, self.answer) = self.get_equations()
         self.hint_tree = self._build_hint_tree()
 
-    # def translate_to_alpha(self, s):
-    #     assert type(s) == str
-    #     #assert min([c in self.to_alpha for c in s])
-    #     return ''.join([self.to_alpha[c] for c in s])
-
-    # def translate_to_math(self, s):
-    #     assert type(s) == str
-    #     #assert min([c in self.to_math for c in s])
-    #     return ''.join([self.to_math[c] for c in s])
+    def get_equations(self):
+        answer_list = []
+        other_list = []
+        rand_start = random.getrandbits(1)
+        for a in range(self.max_value + 1):
+            for b in range(a, self.max_value + 1):
+                ## calculate all possible answers, b is always >= a, so do both orders where possible
+                a_add = str(a)+'+'+str(b)+'='+str(a + b)
+                b_add = str(b)+'+'+str(a)+'='+str(b + a)
+                a_sub = str(a)+'-'+str(b)+'='+str(a - b)
+                b_sub = str(b)+'-'+str(a)+'='+str(b - a)
+                a_mult = str(a)+'x'+str(b)+'='+str(a * b)
+                b_mult = str(b)+'x'+str(a)+'='+str(b * a)
+                ab_div = ''
+                if a != 0:
+                    if float(b) / float(a) == int(b / a):
+                        ab_div = str(b)+'/'+str(a)+'='+str(int(b / a))
+                ## pick some to be actual possible answers
+                if rand_start:
+                    answers = [a_add, a_sub, a_mult, b_mult, ab_div]
+                    others = [b_add, b_sub]
+                else:
+                    answers = [b_add, b_sub, a_mult, b_mult, ab_div]
+                    others = [a_add, a_sub]
+                answer_list += [a for a in answers if len(a) == self.word_length]
+                other_list += [a for a in others if len(a) == self.word_length]
+                ## switch random start
+                rand_start = not(rand_start)
+        answer = random.choice(answer_list)
+        word_list = answer_list + other_list
+        return (word_list, answer)
 
     def get_words(self):
-        word_list = []
-        for a in range(150):
-            for b in range(150):
-                word_list += [ str(a)+'+'+str(b)+'='+str(a + b) ]
-                word_list += [ str(a)+'-'+str(b)+'='+str(a - b) ]
-                word_list += [ str(a)+'x'+str(b)+'='+str(a * b) ]
-                if b > 0:
-                    if float(a) / float(b) == int(a / b):
-                        word_list += [ str(a)+'/'+str(b)+'='+str(int(a / b)) ]
-        return [w for w in word_list if len(w) == self.word_length]
+        return self.word_list
+
+    def get_answer(self):
+        return self.answer
 
 if __name__ == '__main__':
 
@@ -209,11 +213,10 @@ if __name__ == '__main__':
     print("="*80)
     print("MATH VERSION")
     print("="*80)
-    m = all_the_equations(word_length=5)
-    w = [m.translate_to_math(i) for i in m.get_words()]
+    m = all_the_equations(word_length=10)
+    w = m.get_words()
     print('len:', len(w))
     print('min:', min(w))
     print('max:', max(w))
-    print('sample equations:',', '.join(random.sample(w, 20)))
-    print('sample letter combos:',', '.join(random.sample(m.get_words(), 20)))
+    print('sample words:',', '.join(random.sample(w, 20)))
 
