@@ -1,6 +1,6 @@
 {
     "game_type": {
-        "value": "equations",
+        "value": "words",
         "desc": "Game Type",
         "question": "Do you want to play with words or equations?",
         "options": [
@@ -16,7 +16,7 @@
         "type": "int"
     },
     "game_length_equations": {
-        "value": 10,
+        "value": 8,
         "desc": "Chances",
         "question": "How many chances do you want to guess the right equation?",
         "type": "int"
@@ -34,7 +34,7 @@
         "type": "int"
     },
     "max_value_equations": {
-        "value": 900,
+        "value": 99,
         "desc": "Maximum Number",
         "question": "What is the largest (positive) number that should appear in any equation? (Probably ~250 is as high as you'd ever want)",
         "type": "int"
