@@ -34,7 +34,7 @@
         "type": "int"
     },
     "max_value_equations": {
-        "value": 99,
+        "value": 9,
         "desc": "Maximum Number",
         "question": "What is the largest (positive) number that should appear in any equation? (Probably ~250 is as high as you'd ever want)",
         "type": "int"
