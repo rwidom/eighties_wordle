@@ -1,18 +1,18 @@
 # Eighties Wordle ReadME
 
 ## What is this?
-I like to play wordle, and so I'm using it as an opportunity to make my own version. I'm stealing features from other games, and an idea from a kid I know whose teacher has the class play wordle with math. This is really just an exercise for me to learn and have fun.
+I like to play [wordle](https://www.nytimes.com/games/wordle/index.html), and so I'm using it as an opportunity to make my own version. I'm playing with features from other games, and an idea from a kid I know whose teacher has the class play wordle with math. This is really just an exercise for me to learn and have fun.
 ## Where / how can I run it?
-I've tested it on a mac (running MacOS Big Sur 11.6), and on an iPhone via pythonista.
+I've tested it on a mac (running MacOS Big Sur 11.6), and on an iPhone via [pythonista](http://omz-software.com/pythonista/).
 
-I've used starting python in a directory called "eighties-wordle" as a standin for having all of the files needed for this program:
+I've used starting python in a directory called "eighties_wordle" as a standin for having all of the files needed for this program:
 - eighties_wordle.py
 - ew_answer.py
 - ew_display.py
 - ew_guesses.py
 - ew_config.py 
 - ew_options.json
-- wordlist.txt
+- twl06.txt
 
 That's not the most user-friendly pythonic approach, but MVP and all that. :)
 
