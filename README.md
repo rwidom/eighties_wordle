@@ -5,8 +5,9 @@ I like to play [wordle](https://www.nytimes.com/games/wordle/index.html), and so
 
 Today, when I was faffing about with this, I also discovered [nerdle](https://nerdlegame.com/). Theirs is different from mine, in its approach to which equations to include as valid "words". They also don't give hints. The approach to hints that I use for the word version depends on a finite dictionary, and of course math is infinite. OK, and even limiting it to a range of integers, there are still way more possible combinations than words in the scrabble dictionary. Still noodling on different options there... Another I had considered in done by [mathler](https://www.mathler.com/), where they give you the answer to start, so your guesses don't include the equal sign. To be continued!
 
+Having played [absurdle](https://qntm.org/absurdle) a little bit, I couldn't resist making my own non-deterministic version. Here, you don't make the first guess, the computer makes a random first guess for you. It's not terribly well-integrated with the config stuff at this point, but it's an MVP.
+
 And some other variations that I will not be working on, but might play (with thanks to [Tom's guide](https://www.tomsguide.com/news/wordle-alternatives)):
-- [absurdle](https://qntm.org/absurdle) where your goal is more explicitly to rule words out as quickly as possible
 - [worldle](https://worldle.teuteuf.fr/) geography shapes and vectors
 - [chessle](https://jackli.gg/chessle/)
 ## Where / how can I run it?

@@ -1,4 +1,6 @@
 import string
+import random
+from time import sleep
 from ew_display import *
 from ew_config import *
 from ew_answer import all_the_words
@@ -147,5 +149,83 @@ class all_the_guesses:
         else:
             self.take_a_guess()
 
+class elimination_guesses(all_the_guesses):
+    """ 
+    This is similar to absurdle (linked in readme), but it starts with a random guess,
+    to make it non-deterministic.
+    """
+
+    def __init__(self, game_dictionary):
+        ## get the normal game stuff
+        super(elimination_guesses, self).__init__(game_dictionary=game_dictionary, \
+            game_length=100, game_type='words')
+        ## modify for absurdle, re-initializes possible_words, answer, guesses, keyboard with a random guess
+        self.possible_words = self.all_words
+        self.prune_word_list() # don't pass a guess, start with random word choice
+
+    def get_bucket_length(self, bucket_key):
+        assert bucket_key in self.buckets
+        return len(self.buckets[bucket_key])
+
+    def prune_word_list(self, new_guess = None):
+        """ 
+        Modifies the all possible words list to take the largest group with a single status, relative
+        to the given guess. If no guess is specified, will take a random word.
+        """
+        if new_guess is None:
+            new_guess = random.choice(self.possible_words)
+        ## create buckets based on relationship to new guess
+        self.buckets = dict()
+        for word in self.possible_words:
+            ## tuple of statuses: 0 = not in word; 1 = in word, wrong place; 2 = in the right place
+            statuses = tuple([ (word[i] == new_guess[i]) + (word[i] in new_guess) for i in range(len(word)) ])
+            ## add this word to the dict
+            try:
+                self.buckets[ statuses ] += [ word ]
+            except:
+                self.buckets[ statuses ] = [ word ]
+        ## choose the biggest list
+        most_common_pattern = sorted(self.buckets, key=self.get_bucket_length, reverse=True)[0]
+        ## prune wordlist and act as if there is a new answer
+        self.possible_words = self.buckets[most_common_pattern]
+        self.answer = random.choice(self.possible_words)
+        self.guesses += [new_guess]
+        self.keyboard = keyboard_display(self.answer, self.guesses)
+        
+    def take_a_guess(self):
+        """
+        Input: guess is a word that the user typed in
+        Output: None
+        Side effects: Checks for acceptable guess, and 
+        """
+        w = str(input(':')).upper()
+        if len(w) != self.word_length:
+            msg = 'Please enter a '+str(self.word_length)+'-character guess.'
+            self._try_again(w, msg)
+        elif w in self.guesses:
+            msg = "Please enter something you haven't already guessed."
+            self._try_again(w, msg)
+        elif w not in self.all_words:
+            msg = 'Sorry, ' + w + ' is not in our dictionary. Please try again.'
+            self._try_again(w, msg)
+        else:
+            self.prune_word_list(w)
+        return None
+
+
+
+# Absurdle considers every word in its list of 2,315 possible secret words and figures out what its response would be in each case.
+# If the secret word was... 	...then Absurdle's response would be...
+# "CIGAR"	⬜⬜🟨⬜⬜
+# "REBUT"	🟨🟩🟨⬜⬜
+# "SISSY"	⬜⬜⬜⬜🟨
+# "HUMPH"	⬜⬜⬜⬜⬜
+# ...	...
+# "TERNS"	🟩🟩🟩🟩🟩
+# This has the effect of separating all of the 2,315 possible secret words up into different buckets depending on the possible response. In this case, there are 110 of these buckets:
+
+
+if __name__ == '__main__':
+    print('I need to put unit tests here.')
 
 
