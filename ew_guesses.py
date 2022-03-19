@@ -198,6 +198,7 @@ class elimination_guesses(all_the_guesses):
         Output: None
         Side effects: Checks for acceptable guess, and 
         """
+        print(len(self.possible_words),"possible words left.")
         w = str(input(':')).upper()
         if len(w) != self.word_length:
             msg = 'Please enter a '+str(self.word_length)+'-character guess.'
