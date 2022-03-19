@@ -33,6 +33,12 @@
         "question": "How many chances do you want to guess the right word?",
         "type": "int"
     },
+    "absurdle_words": {
+        "value": 1,
+        "desc": "Absurdle",
+        "question": "Would you like to play an Absurdle variation? 1=Yes, 0=No",
+        "type": "bool"
+    },
     "max_value_equations": {
         "value": 9,
         "desc": "Maximum Number",
