@@ -7,27 +7,21 @@ class ew_platform():
 
     def __init__(self):
         (self.IS_IPHONE, self.python_version, self.start_dir) = self.get_platform()
+        self.clear = lambda: os.system('clear')
+        if self.IS_IPHONE == True:
+            import console
+            self.clear = console.clear
+            self.iphone_set_color = console.set_color
+            console.set_font('courier')
         
     def get_platform(self):
         if 'iPhone' in platform.platform():
             IS_IPHONE = True
-            from console import set_font
-            set_font('courier')
         elif 'mac' in platform.platform():
             IS_IPHONE = False
         python_version = platform.python_version()
         start_dir = os.getcwd().split('/')[-1]
         return (IS_IPHONE, python_version, start_dir)
-
-    def clear(self):
-        """ clears the terminal screen for MacOS (phone and computer) """
-        if self.IS_IPHONE == True:
-            import console
-            console.clear()
-        elif self.IS_IPHONE == False:
-            os.system('clear')
-        else:
-            print("Uh-oh, this isn't a supported platform.")
 
     def is_correct_directory(self):
         if self.start_dir == 'eighties_wordle':
@@ -132,15 +126,15 @@ class letter_display():
             ## iphone uses a list [r, g, b]
             ## I can't use ** because set_color won't take named parameters :(
             c = self.get_color()
-            set_color(c[0], c[1], c[2])
+            self.p.iphone_set_color(c[0], c[1], c[2])
             print(self, end='')
-            set_color()
+            self.p.iphone_set_color()
 class ew_configuration(ew_platform):
 
     def __init__(self, filename='ew_options.json'):
+        super(ew_configuration, self).__init__()
         ## get basic info
         self.filename = filename
-        (self.IS_IPHONE, self.python_version, self.start_dir) = self.get_platform()
         ## check and change directory
         assert self.is_correct_directory()
         ## load options dict
