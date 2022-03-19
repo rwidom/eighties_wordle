@@ -132,6 +132,7 @@ class letter_display():
 class ew_configuration(ew_platform):
 
     def __init__(self, filename='ew_options.json'):
+        ## initialize the platform (parent) class
         super(ew_configuration, self).__init__()
         ## get basic info
         self.filename = filename
@@ -159,11 +160,26 @@ class ew_configuration(ew_platform):
         except:
             print("Uh-oh, I'm not able to access your settings file.")
 
-    def _create_letter_display_settings(self):
+    def column_padding(self, setting_string = None):
+        """ 
+        Given a game type or setting value, returns the right number of spaces to right 
+        justify settings displayed in columns 
         """
-        Returns a dict of rows (dicts) each containing row title (options desc), words value 
+        if setting_string == None:
+            ## this works as a default before we have settings values or if we don't have
+            ## a value, because there is one setting that only applies to equations and 
+            ## we have equations in column 2 on the right
+            return ' ' * (self.max_desc_length - 3)
+        else:
+            ## the minus 2 is for padding that happens as part of letter display
+            return ' ' * (self.max_desc_length - len(str(setting_string)) - 2)
+
+    def get_settings_display_table(self):
+        """
+        Returns a list rows (dicts) each containing row title (options desc), words value 
         (if applicable, with letter display object colored with OK if words is the game type, 
-        NO if not), equations value (same logic), and row number. The first row is game type.
+        NO if not), equations value (same logic), row number, and padding strings for display. 
+        The first row is game type.
 
         Assumes that there are two possible settings, though it's built for flexibility on the 
         names (e.g. if we want to change capitalization or order of the columns). Also assumes that all 
@@ -173,51 +189,64 @@ class ew_configuration(ew_platform):
         column1_selected = (self.settings['game_type']['value'] == self.column1)
         rows = { "Game Type": 
             {
+                'row_number': 0,
+                'column1_pad': self.column_padding(self.column1),
                 self.column1: letter_display(self.column1, ('OK'*column1_selected + '?'*(1 - column1_selected))),
-                self.column2: letter_display(self.column2, ('?'*column1_selected + 'OK'*(1 - column1_selected))),
-                "row_number": 0
+                'column2_pad': self.column_padding(self.column2),
+                self.column2: letter_display(self.column2, ('?'*column1_selected + 'OK'*(1 - column1_selected)))
             } 
         }
         for (s, info) in self.settings.items():
             ## add the row to start
             if info['desc'] not in rows and (self.column1 in s or self.column2 in s):
                 row_number = len(rows)
-                rows[info['desc']] = {self.column1: letter_display(), self.column2: letter_display(), "row_number": row_number}
+                rows[info['desc']] = {
+                    'row_number': row_number,
+                    'column1_pad': self.column_padding(),
+                    self.column1: letter_display(), 
+                    'column2_pad': self.column_padding(),
+                    self.column2: letter_display()
+                    }
             ## then add the values as they come up
             if self.column1 in s:
                 status = ('OK'*column1_selected + '?'*(1 - column1_selected))
                 rows[info['desc']][self.column1] = letter_display(str(info['value']), status)
+                rows[info['desc']]['column1_pad'] = self.column_padding(info['value'])
             elif self.column2 in s:
                 status = ('?'*column1_selected + 'OK'*(1 - column1_selected))
                 rows[info['desc']][self.column2] = letter_display(str(info['value']), status)
-        return rows
+                rows[info['desc']]['column2_pad'] = self.column_padding(info['value'])
+        list_of_dicts = [dict({'row_title': row_name}, **row_contents) \
+            for (row_name, row_contents) in rows.items()]
+        return list_of_dicts
 
     def __str__(self):
         """ 
         Creates a string version of the settings display, including ANSI colors for mac and 
         no coloring for IPHONE 
         """
-        row_dicts = self._create_letter_display_settings()
-        row_list = []
-        for (row_name, row_contents) in row_dicts.items():
-            col1 = str(row_contents[self.column1])
-            col1_pad = ' ' * (self.max_desc_length - len(row_contents[self.column1].get_letter()) - 2)
-            col2 = str(row_contents[self.column2])
-            col2_pad = ' ' * (self.max_desc_length - len(row_contents[self.column2].get_letter()) - 2)
-            row_list += [
-                row_name.rjust(self.max_desc_length) + col1_pad + col1 + col2_pad + col2
-            ]
-        return('\n'.join(row_list))
+        row_strings = [
+                row['row_title'].rjust(self.max_desc_length) + \
+                row['column1_pad'] + str(row[self.column1]) + \
+                row['column2_pad'] + str(row[self.column2])
+            for row in self.get_settings_display_table() ]
+        return('\n'.join(row_strings))
 
     def display_settings(self):
-        
         table_width = self.max_desc_length * 3
         self.clear()
         print("-" * table_width)
         print("Eighties Wordle!".center(table_width),"\n")
-        print(self)
-        # for (setting, i) in s.items():
-        #     print(i['desc'].rjust(max_desc_length), ":", i['value'])
+        if self.IS_IPHONE == False:
+            print(self)
+        elif self.IS_IPHONE == True:
+            for row in self.self.get_settings_display_table():
+                print(row['row_title'].rjust(self.max_desc_length), end='')
+                print(row['column1_pad'], end='')
+                row[self.column1].display()
+                print(row['column2_pad'], end='')
+                row[self.column2].display()
+                print('')
         print("-" * table_width)
 
     def check_settings(self):
