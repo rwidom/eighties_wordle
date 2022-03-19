@@ -2,6 +2,10 @@
 
 ## What is this?
 I like to play [wordle](https://www.nytimes.com/games/wordle/index.html), and so I'm using it as an opportunity to make my own version. I'm playing with features from other games, and an idea from a kid I know whose teacher has the class play wordle with math. This is really just an exercise for me to learn and have fun.
+
+Today, when I was faffing about with this, I also discovered [nerdle](https://nerdlegame.com/). Theirs is different from mine, in its approach to which equations to include as valid "words". They also don't give hints. The approach to hints that I use for the word version depends on a finite dictionary, and of course math is infinite. OK, and even limiting it to a range of integers, there are still way more possible combinations than words in the scrabble dictionary. Still noodling on different options there...
+
+There's even [chessle](https://jackli.gg/chessle/)! I'm not so into chess, so not as into the game, but I do think it's an interesting variation.
 ## Where / how can I run it?
 I've tested it on a mac (running MacOS Big Sur 11.6), and on an iPhone via [pythonista](http://omz-software.com/pythonista/).
 
@@ -21,5 +25,9 @@ That's not the most user-friendly pythonic approach, but MVP and all that. :)
 Here are the things I'm trying to make reserver characters in this game: '*' (for users to ask for hints) and '_' (for the program to indicate unknown characters when collecting hints). And I guess I'm assuming that there won't be any games with more than 99 turns or any valid "words" with fewer than 3 characters, because if you want to ask for a hint for a specific turn, you can still do that even in the equations version of the game. 
 
 Huge thanks to WordGameDictionary.com for the [TWL06 Scrabble Word List](https://www.wordgamedictionary.com/twl06/download/twl06.txt).
+## Can I get a hint?
+Yes. If you have at least one character in the right place, you can get a list of all of the words in the dictionary that also have that character or those characters in the same place. The list will include the right answer, and a bunch of wrong answers, some of which you should be able to rule out by taking into account your greyed out letters. 
+
+I think it makes more sense for words than equations, but that's another to do.
 ## Why Eighties?
 I'm calling it Eighties Wordle, because it's all text based, and because working on it has reminded me of when I was a kid in the eighties and I first started to learn computer programming.
