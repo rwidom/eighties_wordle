@@ -177,9 +177,22 @@ class all_the_equations(all_the_words):
 if __name__ == '__main__':
 
     print("="*80)
-    print("REGULAR WORDS")
+    print("Get the min and max word length overall")
     print("="*80)
     a = all_the_words()
+    min_len = 1000
+    max_len = 0
+    with open(a.get_file_location()) as f:
+        for w in f:
+            l = len(w) - 1
+            if l > max_len: max_len = l
+            if l < min_len: min_len = l
+    print("The shortest word has",min_len,"letters.")
+    print("The longest word has",max_len,"letters.")
+
+    print("="*80)
+    print("REGULAR WORDS")
+    print("="*80)
     w = a.get_words()
     print('len:', len(w))
     print('min:', min(w))

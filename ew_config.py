@@ -244,6 +244,10 @@ class ew_configuration(ew_platform):
                             print("OK, let's stay with", self.settings[setting]["value"])
                             new_value = None
                             continue
+                    ## TO DO: stop hard coding this
+                    if self.settings['word_length_words']['value']<2 or self.settings['word_length_words']['value']>15:
+                        print("Sorry, I only have words between 2 and 15 letters long. Let's go with 5.")
+                        self.settings['word_length_words']['value'] = 5
             else:
                 print("Sorry, I don't know that game.")
         with open(self.filename, 'w') as f:
