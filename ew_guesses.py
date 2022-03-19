@@ -155,10 +155,10 @@ class elimination_guesses(all_the_guesses):
     to make it non-deterministic.
     """
 
-    def __init__(self, game_dictionary):
+    def __init__(self, game_dictionary, game_length):
         ## get the normal game stuff
         super(elimination_guesses, self).__init__(game_dictionary=game_dictionary, \
-            game_length=100, game_type='words')
+            game_length=game_length, game_type='words')
         ## modify for absurdle, re-initializes possible_words, answer, guesses, keyboard with a random guess
         self.possible_words = self.all_words
         self.prune_word_list() # don't pass a guess, start with random word choice
