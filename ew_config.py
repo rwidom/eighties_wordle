@@ -240,7 +240,7 @@ class ew_configuration(ew_platform):
         if self.IS_IPHONE == False:
             print(self)
         elif self.IS_IPHONE == True:
-            for row in self.self.get_settings_display_table():
+            for row in self.get_settings_display_table():
                 print(row['row_title'].rjust(self.max_desc_length), end='')
                 print(row['column1_pad'], end='')
                 row[self.column1].display()
