@@ -155,13 +155,16 @@ class elimination_guesses(all_the_guesses):
     to make it non-deterministic.
     """
 
-    def __init__(self, game_dictionary, game_length):
+    def __init__(self, game_dictionary, game_length, first_guess = None):
         ## get the normal game stuff
         super(elimination_guesses, self).__init__(game_dictionary=game_dictionary, \
             game_length=game_length, game_type='words')
         ## modify for absurdle, re-initializes possible_words, answer, guesses, keyboard with a random guess
         self.possible_words = self.all_words
-        self.prune_word_list() # don't pass a guess, start with random word choice
+        if first_guess is None:
+            self.prune_word_list() # don't pass a guess, start with random word choice
+        else:
+            self.prune_word_list(first_guess)
 
     def get_bucket_length(self, bucket_key):
         assert bucket_key in self.buckets
@@ -178,7 +181,7 @@ class elimination_guesses(all_the_guesses):
         self.buckets = dict()
         for word in self.possible_words:
             ## tuple of statuses: 0 = not in word; 1 = in word, wrong place; 2 = in the right place
-            statuses = tuple([ (word[i] == new_guess[i]) + (word[i] in new_guess) for i in range(len(word)) ])
+            statuses = tuple([l.get_status() for l in guess_display(guess = word, answer = new_guess).get_letter_statuses()])
             ## add this word to the dict
             try:
                 self.buckets[ statuses ] += [ word ]
@@ -213,20 +216,28 @@ class elimination_guesses(all_the_guesses):
             self.prune_word_list(w)
         return None
 
-
-
-# Absurdle considers every word in its list of 2,315 possible secret words and figures out what its response would be in each case.
-# If the secret word was... 	...then Absurdle's response would be...
-# "CIGAR"	⬜⬜🟨⬜⬜
-# "REBUT"	🟨🟩🟨⬜⬜
-# "SISSY"	⬜⬜⬜⬜🟨
-# "HUMPH"	⬜⬜⬜⬜⬜
-# ...	...
-# "TERNS"	🟩🟩🟩🟩🟩
-# This has the effect of separating all of the 2,315 possible secret words up into different buckets depending on the possible response. In this case, there are 110 of these buckets:
-
-
 if __name__ == '__main__':
-    print('I need to put unit tests here.')
+    sample_games = \
+        [
+            ['BURGLE', 'POINTS', 'HIGHLY', 'KITTEN', 'FASTER'],
+            ['RAGGEE', 'POINTS', 'BILKED', 'PUSHED', 'UNKIND', 'UNBIND'],
+            ['WEBBED', 'TROUGH', 'PLAINT', 'AILING', 'FAILED', 'MAKERS', 'YANKED', 'CANVAS', 'CANNAS'],
+            ['ALIENS', 'LINKED', 'PASSES', 'FABLED', 'TARGET', 'RAMMED', 'HAMMER', 'JAMMER'],
+            ['MERGER', 'POINTS', 'YOUTHS', 'HACKLY', 'DRAFTS', 'BUBBLY']
+        ]
+    for sg in sample_games:
+        print("="*80)
+        d = all_the_words(word_length=6)
+        g = elimination_guesses(game_dictionary = d, game_length = 20, first_guess = sg[0])
+        for turn in sg:
+            print('-'*40)
+            if turn != sg[0]:
+                g.prune_word_list(turn)
+            print('Pruned list of possible words based on',turn,'has',len(g.possible_words),'words, starting with...')
+            print(', '.join(g.possible_words[:10]))
+            print('Randomly chosen answer:', g.answer, '(', g.possible_words.index(g.answer), ')')
+            for guess in g.guesses:
+                disp = guess_display(guess, g.answer)
+                disp.display()
 
 
