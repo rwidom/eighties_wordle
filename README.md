@@ -30,7 +30,7 @@ Here are the things I'm trying to make reserver characters in this game: '*' (fo
 
 Huge thanks to WordGameDictionary.com for the [TWL06 Scrabble Word List](https://www.wordgamedictionary.com/twl06/download/twl06.txt).
 ## Can I get a hint?
-Yes. If you have at least one character in the right place, you can get a list of all of the words in the dictionary that also have that character or those characters in the same place. The list will include the right answer, and a bunch of wrong answers, some of which you should be able to rule out by taking into account your greyed out letters. 
+Yes, but not for the absurdle version. If you have at least one character in the right place, you can get a list of all of the words in the dictionary that also have that character or those characters in the same place. The list will include the right answer, and a bunch of wrong answers, some of which you should be able to rule out by taking into account your greyed out letters. 
 
 I think it makes more sense for words than equations, but that's another to do.
 ## Why Eighties?
