@@ -170,6 +170,45 @@ class elimination_guesses(all_the_guesses):
         assert bucket_key in self.buckets
         return len(self.buckets[bucket_key])
 
+    def get_alphabet_tuple(self, word):
+        """
+        Returns a 26 length tuple of tuples with the position(s) of each letter represented by 
+        the position in the tuple
+        """
+        assert type(word) == str
+        l = [tuple()]*26
+        for (position, letter) in enumerate(word):
+            l_index = string.ascii_uppercase.index(letter)
+            l[l_index] += tuple([position])
+        return tuple(l)
+
+    def get_bucket_id(self, guess, answer):
+        """ 
+        Input: 
+            - a guess and an answer, 26 position tuples from get_alphabet_tuple
+        Output: a tuple of 26 values representing the known position(s) of each letter
+            - 'x' means we know the letter is *not* in the answer
+            - empty tuple means we don't know anything about the letter
+            - length of the tuple means known slots for the letter
+            - within the tuple, int values are known position(s), None values are unknown positions
+        """
+        assert type(guess) == tuple
+        assert type(answer) == tuple
+        bucket_id = [tuple()]*26
+        for i in range(26):
+            ## letter not in the answer, but in the guess
+            if len(answer[i])==0 and len(guess[i])>0:
+                bucket_id[i] = 'x'
+            ## compare positions
+            else:
+                known_positions = set(guess[i]).intersection(set(answer[i]))
+                unknown_positions = min(
+                    len(set(answer[i]) - known_positions),
+                    len(set(guess[i]) - known_positions)
+                )
+                bucket_id[i] = tuple(known_positions) + tuple([None]*unknown_positions)
+        return tuple(bucket_id)
+
     def prune_word_list(self, new_guess = None):
         """ 
         Modifies the all possible words list to take the largest group with a single status, relative
@@ -177,11 +216,13 @@ class elimination_guesses(all_the_guesses):
         """
         if new_guess is None:
             new_guess = random.choice(self.possible_words)
+        new_guess_tuple = self.get_alphabet_tuple(new_guess)
         ## create buckets based on relationship to new guess
         self.buckets = dict()
         for word in self.possible_words:
             ## tuple of statuses: 0 = not in word; 1 = in word, wrong place; 2 = in the right place
-            statuses = tuple([l.get_status() for l in guess_display(guess = word, answer = new_guess).get_letter_statuses()])
+            word_tuple = self.get_alphabet_tuple(word)
+            statuses = self.get_bucket_id(guess = word_tuple, answer = new_guess_tuple)
             ## add this word to the dict
             try:
                 self.buckets[ statuses ] += [ word ]
