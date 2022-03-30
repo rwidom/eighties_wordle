@@ -260,6 +260,7 @@ class elimination_guesses(all_the_guesses):
 if __name__ == '__main__':
     sample_games = \
         [
+            ['REAVED', 'SERVED', 'POINTS', 'SQUIRT', 'SHIRTS', 'TRISTE', 'ARISTA' ],
             ['BURGLE', 'POINTS', 'HIGHLY', 'KITTEN', 'FASTER'],
             ['RAGGEE', 'POINTS', 'BILKED', 'PUSHED', 'UNKIND', 'UNBIND'],
             ['WEBBED', 'TROUGH', 'PLAINT', 'AILING', 'FAILED', 'MAKERS', 'YANKED', 'CANVAS', 'CANNAS'],
