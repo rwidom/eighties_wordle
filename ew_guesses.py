@@ -197,7 +197,7 @@ class elimination_guesses(all_the_guesses):
         bucket_id = [tuple()]*26
         for i in range(26):
             ## letter not in the answer, but in the guess
-            if len(answer[i])==0 and len(guess[i])>0:
+            if answer[i] == tuple() and guess[i] != tuple():
                 bucket_id[i] = 'x'
             ## compare positions
             else:
