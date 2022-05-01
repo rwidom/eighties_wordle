@@ -46,15 +46,18 @@ while True:
 
     ## show the word definition
     if config.get_game_type() == 'words':
-        ## get the api key for https://dictionaryapi.com/ which is run by Merriam-Webster
-        with open('dictionary_api.txt') as f:
-            API_KEY = f.read()
-        ## call the API
-        definition_url = 'https://dictionaryapi.com/api/v3/references/collegiate/json/'+g.answer+'?key='+API_KEY
-        definition = requests.get(definition_url).json()[0]['def']
-        ## pretty print isn't 100% pretty, but I don't want to figure out all the details of the formatting
-        pprint(definition)
-        print()
+        try:
+            ## get the api key for https://dictionaryapi.com/ which is run by Merriam-Webster
+            with open('dictionary_api.txt') as f:
+                API_KEY = f.read()
+            ## call the API
+            definition_url = 'https://dictionaryapi.com/api/v3/references/collegiate/json/'+g.answer+'?key='+API_KEY
+            definition = requests.get(definition_url).json()[0]['def']
+            ## pretty print isn't 100% pretty, but I don't want to figure out all the details of the formatting
+            pprint(definition)
+            print()
+        except:
+            print("Something's up with the dictionary check. Sorry!")
 
     ## want to play again?
     p = input("Want to play again? (Yes, Y, and You betcha, with any capitalization, will all work):")
