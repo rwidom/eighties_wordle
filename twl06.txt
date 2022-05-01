@@ -15072,7 +15072,6 @@ bimorph
 bimorphemic
 bimorphs
 bin
-binal
 binaries
 binarism
 binarisms
@@ -63027,7 +63026,6 @@ gatepost
 gateposts
 gater
 gaters
-gates
 gateway
 gateways
 gather
@@ -113097,8 +113095,6 @@ peising
 pejorative
 pejoratively
 pejoratives
-pekan
-pekans
 peke
 pekepoo
 pekepoos
