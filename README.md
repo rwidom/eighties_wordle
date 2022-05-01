@@ -19,6 +19,7 @@ I've used starting python in a directory called "eighties_wordle" as a standin f
 - ew_display.py
 - ew_guesses.py
 - ew_config.py 
+- ew_word_definition.py (more on this under "[What is a word?](https://github.com/rwidom/eighties_wordle/blob/main/README.md#what-is-a-word)")
 - ew_options.json
 - twl06.txt
 
@@ -29,6 +30,8 @@ That's not the most user-friendly pythonic approach, but MVP and all that. :)
 Here are the things I'm trying to make reserver characters in this game: '*' (for users to ask for hints) and '_' (for the program to indicate unknown characters when collecting hints). And I guess I'm assuming that there won't be any games with more than 99 turns or any valid "words" with fewer than 3 characters, because if you want to ask for a hint for a specific turn, you can still do that even in the equations version of the game. 
 
 Huge thanks to WordGameDictionary.com for the [TWL06 Scrabble Word List](https://www.wordgamedictionary.com/twl06/download/twl06.txt).
+
+I finally got annoyed enough by words I don't know that I added a way to get a minimalist definition from [Merriam-Webster](https://dictionaryapi.com/). To use it, you need to [get your own (free!) API key](https://dictionaryapi.com/register/index) and store it (and nothing else!) in a file called `dictionary_api.txt` in the directory with all the other eighties-wordle stuff. If you don't want definitions, just comment out the call to `get_first_definition` [here](https://github.com/rwidom/eighties_wordle/blob/254e8b08a6dbe62ffa83e99cb7ae7d8dc5359698/eighties_wordle.py#L46)
 ## Can I get a hint?
 Yes, but not for the absurdle version. If you have at least one character in the right place, you can get a list of all of the words in the dictionary that also have that character or those characters in the same place. The list will include the right answer, and a bunch of wrong answers, some of which you should be able to rule out by taking into account your greyed out letters. 
 
