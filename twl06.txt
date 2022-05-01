@@ -97898,8 +97898,6 @@ mossback
 mossbacked
 mossbacks
 mossed
-mosser
-mossers
 mosses
 mossgrown
 mossier
@@ -166611,7 +166609,6 @@ uncultivated
 uncultured
 uncurable
 uncurably
-uncurb
 uncurbed
 uncurbing
 uncurbs
