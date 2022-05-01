@@ -75,12 +75,11 @@ class all_the_words:
             tree branch for the associated word-length)
         Output: One dict with all of the keys, and unions of the sets where the keys overlap
         """
-        r = a.copy()
         both_index = a.keys() & b.keys()
         unions = {i : (a[i] | b[i]) for i in both_index}
-        r.update(b) ## add b indices to a where they are missing, and overwrite a values with b where they overlap
-        r.update(unions) ## overwrite the overlapping values with the unions we ultimately want
-        return r
+        # keys and values from a and b, with values overwritten by unions where applicable
+        # with a style nod to Dan Bader https://twitter.com/dbader_org/status/839660602863800320
+        return { **a, **b, **unions }
 
     def _build_hint_tree(self):
         """ 
