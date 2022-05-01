@@ -27,7 +27,7 @@ That's not the most user-friendly pythonic approach, but MVP and all that. :)
 
 ## What is a word?
 
-Here are the things I'm trying to make reserver characters in this game: '*' (for users to ask for hints) and '_' (for the program to indicate unknown characters when collecting hints). And I guess I'm assuming that there won't be any games with more than 99 turns or any valid "words" with fewer than 3 characters, because if you want to ask for a hint for a specific turn, you can still do that even in the equations version of the game. 
+Here are the things I'm trying to make reserved characters in this game: '*' (for users to ask for hints) and '_' (for the program to indicate unknown characters when collecting hints). And I guess I'm assuming that there won't be any games with more than 99 turns or any valid "words" with fewer than 3 characters, because if you want to ask for a hint for a specific turn, you can still do that even in the equations version of the game. 
 
 Huge thanks to WordGameDictionary.com for the [TWL06 Scrabble Word List](https://www.wordgamedictionary.com/twl06/download/twl06.txt).
 
