@@ -6,6 +6,8 @@ from ew_display import *
 from ew_answer import *
 from ew_guesses import *
 from ew_config import *
+import requests
+from pprint import pprint
 
 config = ew_configuration()
 
@@ -41,6 +43,18 @@ while True:
     g.take_a_guess()
     while not(g.game_over):
         g.next_step()
+
+    ## show the word definition
+    if config.get_game_type() == 'words':
+        ## get the api key for https://dictionaryapi.com/ which is run by Merriam-Webster
+        with open('dictionary_api.txt') as f:
+            API_KEY = f.read()
+        ## call the API
+        definition_url = 'https://dictionaryapi.com/api/v3/references/collegiate/json/'+g.answer+'?key='+API_KEY
+        definition = requests.get(definition_url).json()[0]['def']
+        ## pretty print isn't 100% pretty, but I don't want to figure out all the details of the formatting
+        pprint(definition)
+        print()
 
     ## want to play again?
     p = input("Want to play again? (Yes, Y, and You betcha, with any capitalization, will all work):")
