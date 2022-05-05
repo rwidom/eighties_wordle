@@ -45,7 +45,10 @@ while True:
 
     ## show the word definition
     if config.get_game_type() == 'words':
-        print('-->',g.answer,'means',get_first_definition(g.answer))
+        try:
+            print('-->',g.answer,'means',get_first_definition(g.answer))
+        except:
+            pass
 
     ## want to play again?
     p = input("Want to play again? (Yes, Y, and You betcha, with any capitalization, will all work):")
