@@ -1,4 +1,5 @@
 import random
+import json
 from ew_config import ew_platform
 p = ew_platform()
 assert p.is_correct_directory()
@@ -67,7 +68,7 @@ class all_the_words:
         """ 
         Generates an index a list of position / letter tuples for navigating the hint tree
         """
-        return [ (i, word[i]) for i in range(self.word_length) if word[i] != '_' ]
+        return [ str(i).zfill(2)+word[i] for i in range(self.word_length) if word[i] != '_' ]
 
     def merge_hint_dicts(self, a, b):
         """ 
@@ -90,19 +91,27 @@ class all_the_words:
         - key is a tuple of character and position
         - value is a set of words with that character and position
 
-        The hint then is the intersection of all of the words with the known character, position pairs
+        The hint then is the intersection of all of the words with the known character, position pairs.
 
-        It takes time and space to set up this structure. The brute force approach of evaluating 
-        every word in the list isn't all that slow. And, not every player will ask for a hint in every game.
-        So for a real software package, I would at least save this rather than generating it in memory at the 
-        start of every game, and probably just skip it. But it was fun to implement, and would allow the 
-        computer to guess letters as an alternate game dynamic.
+        So that we don't have to calculate this at the beginning of each game, it saves the last hint tree
+        with word length. It will still recalculate if the word length changes. TO DO: add a check for dictionary
+        changes.
         """
         assert type(self.word_list) == list
-        hint_tree = {}
-        for w in self.word_list:
-            add_leaves = dict.fromkeys(self.get_hint_index(w), set([w]))
-            hint_tree = self.merge_hint_dicts(hint_tree, add_leaves)
+        try:
+            ## for this to work, file must exist, and it must be a dict for the game word length 
+            with open("ew_hint_tree.json", "r") as input_file:
+                ew_hint_tree_data = input_file.read()
+            ew_hint_tree = json.loads(ew_hint_tree_data)
+            hint_tree = ew_hint_tree[self.word_length]
+        except:
+            ## if that's not true, we'll create the hint tree and write it to this file for next time
+            with open("ew_hint_tree.json", "w") as output_file:
+                hint_tree = {}
+                for w in self.word_list:
+                    add_leaves = dict.fromkeys(self.get_hint_index(w), set([w]))
+                    hint_tree = self.merge_hint_dicts(hint_tree, add_leaves)
+                output_file.write( str({self.word_length: hint_tree}) )
         return(hint_tree)
 
     def collect_hints(self, my_word):
