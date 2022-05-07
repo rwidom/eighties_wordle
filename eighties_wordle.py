@@ -1,7 +1,6 @@
 # this little practice project is an homage to WORDLE
 # find the real thing here: https://www.powerlanguage.co.uk/wordle/
 
-from time import sleep
 from ew_display import *
 from ew_answer import *
 from ew_guesses import *
@@ -11,6 +10,7 @@ from ew_word_definition import *
 config = ew_configuration()
 
 while True:
+    ## clear the screen
     config.clear()
     ## choose the type of game, length of thing to guess, and number of changes
     config.check_settings()
@@ -53,8 +53,7 @@ while True:
     ## want to play again?
     p = input("Want to play again? (Yes, Y, and You betcha, with any capitalization, will all work):")
     if p.lower() in ('yes','y','you betcha'):
-        print("Yay! Me too!")
-        sleep(1)
+        continue
     else:
         print("That's cool, I didn't want to either.")
         exit()
