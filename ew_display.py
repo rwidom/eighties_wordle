@@ -1,4 +1,4 @@
-from ew_config import *
+from ew_config import ew_platform, letter_display
 p = ew_platform()        
 
 class guess_display:
