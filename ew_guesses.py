@@ -1,6 +1,5 @@
 import string
 import random
-from time import sleep
 from ew_display import *
 from ew_config import *
 from ew_answer import all_the_words
