@@ -10,7 +10,7 @@
         "type": "str"
     },
     "word_length_equations": {
-        "value": 8,
+        "value": 6,
         "desc": "Characters",
         "question": "I'm going to pick an equation for you to guess, how many digits should it have, including an = and an operator?",
         "type": "int"

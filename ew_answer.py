@@ -145,6 +145,12 @@ class all_the_equations(all_the_words):
         self.hint_tree = self._build_hint_tree()
 
     def get_equations(self):
+        # TO DO: move this to configuration step
+        try:
+            assert len(str(self.max_value)+'*'+str(self.max_value)+'='+str(self.max_value^2)) >= self.word_length
+        except:
+            print('Oops! No equations fit those constraints. Please restart and lower the characters or raise the maximum number.')
+            exit()
         answer_list = []
         other_list = []
         rand_start = random.getrandbits(1)
