@@ -1,14 +1,14 @@
 import string
 import random
 from ew_display import *
-from ew_config import *
+from ew_config import ew_platform
 from ew_answer import all_the_words
 
 class all_the_guesses:
     """
     Accumulates guesses and user progress through the game
     Input: 
-        game_dictionary of type all_the_words, initialized elsewhere
+        game_dictionary, initialized elsewhere
         user typing in guesses
     """
 
@@ -108,18 +108,18 @@ class all_the_guesses:
         for the top of each turn 
         """
         ## get the appropriate clear screen mechanism for this platform
-        config = ew_configuration()
+        p = ew_platform()
         ## do the printing
         if len(self.guesses) == 0:
-            config.clear()
+            p.clear()
             print("I'm thinking of a", self.word_length, \
                 (self.game_type == 'words')*"letter word." + (self.game_type == 'equations')*"digit equation.", \
                 "Start guessing!")
         elif len(self.hint_list)>0:
-            config.clear()
+            p.clear()
             print("Possibilities:", ", ".join(self.hint_list))
         else:
-            config.clear()
+            p.clear()
         remaining_guesses = self.game_length - len(self.guesses)
         if remaining_guesses == 1:
             print('You have 1 guess left.')
