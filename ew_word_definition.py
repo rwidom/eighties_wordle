@@ -1,5 +1,13 @@
-import requests
 import re
+import subprocess
+## requests does not come standard but is how we ping the dictionary api
+try:
+    import requests
+except ImportError:
+    print("Trying to Install required module: requests...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'requests'])
+finally:
+    import requests
 
 def get_first_definition(word):
     """ ping dictionary api for an oversimplified definition of a word """
