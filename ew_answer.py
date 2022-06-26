@@ -111,7 +111,10 @@ class all_the_words:
             with open("ew_hint_tree.json", "r") as input_file:
                 ew_hint_tree_data = input_file.read()
             ew_hint_tree = json.loads(ew_hint_tree_data)
-            hint_tree = ew_hint_tree[str(self.word_length)]
+            hint_tree = dict()
+            # convert back from json/list to set
+            for (key, value) in ew_hint_tree[str(self.word_length)]:
+                hint_tree[key] = set(value)
         except:
             ## if that's not true, we'll create the hint tree and write it to this file for next time
             hint_tree = {}
