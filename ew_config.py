@@ -278,6 +278,9 @@ class ew_configuration(ew_platform):
             confirm = input("Is this the game you'd like to play? (Y / N) ")
             if confirm.lower() in ('yes','y','you betcha'):
                 break
+            elif confirm.lower() in ('quit','q','exit','e','stop'):
+                print('OK, see you next time.')
+                exit()
             # Game type drives the rest of the questions
             new_value = input(self.settings['game_type']['question']+' ').lower()
             game_type = self._validate(
