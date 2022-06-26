@@ -59,9 +59,9 @@ while True:
             pass
 
     ## want to play again?
-    p = input("Want to play again? (Yes, Y, and You betcha, with any capitalization, will all work):")
-    if p.lower() in ('yes','y','you betcha'):
-        continue
-    else:
+    p = input("Want to play again? (No, N, and Nope, with any capitalization, will all exit the game):")
+    if p.lower() in ('no','n','nope'):
         print("That's cool, I didn't want to either.")
         exit()
+    else:
+        continue
