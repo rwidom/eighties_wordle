@@ -10,7 +10,7 @@
         "type": "str"
     },
     "word_length_equations": {
-        "value": 6,
+        "value": 8,
         "desc": "Characters",
         "question": "I'm going to pick an equation for you to guess, how many digits should it have, including an = and an operator?",
         "type": "int"
@@ -24,8 +24,23 @@
     "word_length_words": {
         "value": 5,
         "desc": "Characters",
-        "question": "I'm going to pick a word for you to guess, how many letters should it have?",
-        "type": "int"
+        "question": "I'm going to pick a word for you to guess, how many letters should it have? (choose 2 - 15)",
+        "options": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+        ]
     },
     "game_length_words": {
         "value": 6,
@@ -34,13 +49,16 @@
         "type": "int"
     },
     "absurdle_words": {
-        "value": 1,
+        "value": "No",
         "desc": "Absurdle",
-        "question": "Would you like to play an Absurdle variation? 1=Yes, 0=No",
-        "type": "bool"
+        "question": "Would you like to play an Absurdle variation? (Yes or No)",
+        "options": [
+            "Yes",
+            "No"
+        ]
     },
     "max_value_equations": {
-        "value": 9,
+        "value": 50,
         "desc": "Maximum Number",
         "question": "What is the largest (positive) number that should appear in any equation? (Probably ~250 is as high as you'd ever want)",
         "type": "int"

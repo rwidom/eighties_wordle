@@ -28,7 +28,7 @@ while True:
     if config.get_game_type() == 'words':
         d = all_the_words(word_length = config.get_value('word_length_words'),
             word_list_file_loc='twl06.txt')
-        if config.get_value("absurdle_words"):
+        if config.get_value("absurdle_words") == 'Yes':
             g = elimination_guesses(d, \
                 game_length = config.get_value('game_length_words'))
         else:

@@ -262,11 +262,12 @@ class ew_configuration(ew_platform):
         """
         assert old_value is not None
         setting_type = type(old_value)
-        if options is None or setting_type(new_value) in options:
-            try:
-                return setting_type(new_value)
-            except:
-                pass
+        try:
+            new_value = setting_type(new_value)
+            if options is None or new_value in options:
+                return new_value
+        except:
+            pass
         print("Okay, let's stay with", old_value)
         return old_value
 
@@ -288,12 +289,11 @@ class ew_configuration(ew_platform):
             for (setting, i) in self.settings.items():
                 if (game_type in setting):
                     new_value = input(i['question']+' ')
-                    validated = self._validate(self.settings[setting]['value'], new_value)
+                    if "options" in i:
+                        validated = self._validate(i['value'], new_value, i['options'])
+                    else:
+                        validated = self._validate(i['value'], new_value)
                     self.settings[setting]['value'] = validated
-                ## TO DO: stop hard coding this
-                if self.settings['word_length_words']['value']<2 or self.settings['word_length_words']['value']>15:
-                    print("Sorry, I only have words between 2 and 15 letters long. Let's go with 5.")
-                    self.settings['word_length_words']['value'] = 5
         with open(self.filename, 'w') as f:
             f.write(json.dumps(self.settings, indent=4)) 
         print("Great!")
