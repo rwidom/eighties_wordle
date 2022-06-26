@@ -1,5 +1,5 @@
 import random
-import json
+from ast import literal_eval
 from ew_config import ew_platform
 p = ew_platform()
 assert p.is_correct_directory()
@@ -107,26 +107,25 @@ class all_the_words:
         """
         assert type(self.word_list) == list
         try:
-            ## for this to work, file must exist, and it must be a dict for the game word length 
-            with open("ew_hint_tree.json", "r") as input_file:
+            # for this to work, file must exist, and it must be a dict for the game 
+            # word length 
+            with open("ew_hint_tree.txt", "r") as input_file:
                 ew_hint_tree_data = input_file.read()
-            ew_hint_tree = json.loads(ew_hint_tree_data)
-            hint_tree = dict()
-            # convert back from json/list to set
-            for (key, value) in ew_hint_tree[str(self.word_length)]:
-                hint_tree[key] = set(value)
+            ew_hint_tree = literal_eval(ew_hint_tree_data)
+            # double check that we're reading the types correctly
+            assert isinstance(ew_hint_tree, dict)
+            assert isinstance(list(ew_hint_tree[self.word_length].values())[0], set)
+            hint_tree = ew_hint_tree[self.word_length]
         except:
-            ## if that's not true, we'll create the hint tree and write it to this file for next time
+            print('Give me a second to collect hints for you...')
+            # if that's not true, we'll create the hint tree and write it to this file 
+            # for next time
             hint_tree = {}
             for w in self.word_list:
                 add_leaves = dict.fromkeys(self.get_hint_index(w), set([w]))
                 hint_tree = self.merge_hint_dicts(hint_tree, add_leaves)
-            # convert sets to lists for json serialization
-            write_dict = dict()
-            for (key, value) in hint_tree.items():
-                write_dict[key] = list(value)
-            with open("ew_hint_tree.json", "w") as json_output:
-                json.dump({self.word_length: write_dict}, json_output)
+            with open("ew_hint_tree.txt", "w") as output_file:
+                output_file.write(str({self.word_length: hint_tree}))
         return(hint_tree)
 
     def collect_hints(self, my_word):
