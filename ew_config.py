@@ -129,6 +129,7 @@ class letter_display():
             self.p.iphone_set_color(c[0], c[1], c[2])
             print(self, end='')
             self.p.iphone_set_color()
+
 class ew_configuration(ew_platform):
 
     def __init__(self, filename='ew_options.json'):
@@ -249,30 +250,50 @@ class ew_configuration(ew_platform):
                 print('')
         print("-" * table_width)
 
+
+    def _validate(self, old_value, new_value, options=None):
+        """
+        Take input for new setting and check it against value options.
+        If it doesn't match (e.g. just hit return) stay with the old value.
+        Required: 
+            - old_value
+            - new_value
+            - options -- a non-empty list of a single type (probably int or str)
+        """
+        assert old_value is not None
+        setting_type = type(old_value)
+        if options is None or setting_type(new_value) in options:
+            try:
+                return setting_type(new_value)
+            except:
+                pass
+        print("Okay, let's stay with", old_value)
+        return old_value
+
     def check_settings(self):
         while True:
             self.display_settings()
+            # If we're good already, ignore the rest
             confirm = input("Is this the game you'd like to play? (Y / N) ")
             if confirm.lower() in ('yes','y','you betcha'):
                 break
-            game_type = input(self.settings['game_type']['question']+' ').lower()
-            if game_type in self.settings['game_type']['options']:
-                self.settings['game_type']["value"] = game_type
-                for (setting, i) in self.settings.items():
-                    if (game_type in setting):
-                        new_value = input(i['question']+' ')
-                        try:
-                            self.settings[setting]["value"] = int(new_value)
-                        except:
-                            print("OK, let's stay with", self.settings[setting]["value"])
-                            new_value = None
-                            continue
-                    ## TO DO: stop hard coding this
-                    if self.settings['word_length_words']['value']<2 or self.settings['word_length_words']['value']>15:
-                        print("Sorry, I only have words between 2 and 15 letters long. Let's go with 5.")
-                        self.settings['word_length_words']['value'] = 5
-            else:
-                print("Sorry, I don't know that game.")
+            # Game type drives the rest of the questions
+            new_value = input(self.settings['game_type']['question']+' ').lower()
+            game_type = self._validate(
+                self.settings['game_type']['value'],
+                new_value,
+                self.settings['game_type']['options'])
+            self.settings['game_type']["value"] = game_type
+            # Rest of the questions
+            for (setting, i) in self.settings.items():
+                if (game_type in setting):
+                    new_value = input(i['question']+' ')
+                    validated = self._validate(self.settings[setting]['value'], new_value)
+                    self.settings[setting]['value'] = validated
+                ## TO DO: stop hard coding this
+                if self.settings['word_length_words']['value']<2 or self.settings['word_length_words']['value']>15:
+                    print("Sorry, I only have words between 2 and 15 letters long. Let's go with 5.")
+                    self.settings['word_length_words']['value'] = 5
         with open(self.filename, 'w') as f:
             f.write(json.dumps(self.settings, indent=4)) 
         print("Great!")

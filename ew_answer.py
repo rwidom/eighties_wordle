@@ -4,6 +4,14 @@ from ew_config import ew_platform
 p = ew_platform()
 assert p.is_correct_directory()
 
+# import logging
+# logging.basicConfig(
+#     filename='ew_log.txt',
+#     filemode='a',    
+#     format='%(asctime)s %(levelname)-8s %(message)s',
+#     level=logging.INFO,
+#     datefmt='%Y-%m-%d %H:%M:%S')
+
 class all_the_words:
     """
     Gets a list of words matching the game word length and picks one for the user to guess
@@ -103,15 +111,19 @@ class all_the_words:
             with open("ew_hint_tree.json", "r") as input_file:
                 ew_hint_tree_data = input_file.read()
             ew_hint_tree = json.loads(ew_hint_tree_data)
-            hint_tree = ew_hint_tree[self.word_length]
+            hint_tree = ew_hint_tree[str(self.word_length)]
         except:
             ## if that's not true, we'll create the hint tree and write it to this file for next time
-            with open("ew_hint_tree.json", "w") as output_file:
-                hint_tree = {}
-                for w in self.word_list:
-                    add_leaves = dict.fromkeys(self.get_hint_index(w), set([w]))
-                    hint_tree = self.merge_hint_dicts(hint_tree, add_leaves)
-                output_file.write( str({self.word_length: hint_tree}) )
+            hint_tree = {}
+            for w in self.word_list:
+                add_leaves = dict.fromkeys(self.get_hint_index(w), set([w]))
+                hint_tree = self.merge_hint_dicts(hint_tree, add_leaves)
+            # convert sets to lists for json serialization
+            write_dict = dict()
+            for (key, value) in hint_tree.items():
+                write_dict[key] = list(value)
+            with open("ew_hint_tree.json", "w") as json_output:
+                json.dump({self.word_length: write_dict}, json_output)
         return(hint_tree)
 
     def collect_hints(self, my_word):
