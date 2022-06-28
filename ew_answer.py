@@ -1,4 +1,5 @@
 import random
+import string
 from ast import literal_eval
 from ew_config import ew_platform
 p = ew_platform()
@@ -78,18 +79,6 @@ class all_the_words:
         """
         return [ str(i).zfill(2)+word[i] for i in range(self.word_length) if word[i] != '_' ]
 
-    def merge_hint_dicts(self, a, b):
-        """ 
-        Input: Two dicts where the values are sets (i.e. the dict for a new word, and the existing hint 
-            tree branch for the associated word-length)
-        Output: One dict with all of the keys, and unions of the sets where the keys overlap
-        """
-        both_index = a.keys() & b.keys()
-        unions = {i : (a[i] | b[i]) for i in both_index}
-        # keys and values from a and b, with values overwritten by unions where applicable
-        # with a style nod to Dan Bader https://twitter.com/dbader_org/status/839660602863800320
-        return { **a, **b, **unions }
-
     def _build_hint_tree(self):
         """ 
         Takes the list of words, and transforms it into a hierarchy to use for quickly finding hints.
@@ -112,18 +101,23 @@ class all_the_words:
             with open("ew_hint_tree.txt", "r") as input_file:
                 ew_hint_tree_data = input_file.read()
             ew_hint_tree = literal_eval(ew_hint_tree_data)
-            # double check that we're reading the types correctly
+            # we read the types correctly
             assert isinstance(ew_hint_tree, dict)
-            assert isinstance(list(ew_hint_tree[self.word_length].values())[0], set)
+            # we have the right word length
+            assert self.word_length in ew_hint_tree
             hint_tree = ew_hint_tree[self.word_length]
         except:
             print('Give me a second to collect hints for you...')
             # if that's not true, we'll create the hint tree and write it to this file 
             # for next time
-            hint_tree = {}
+            hint_tree = {
+                str(n).zfill(2) + l: set()
+                for n in range(self.word_length)
+                for l in string.ascii_uppercase
+            }
             for w in self.word_list:
-                add_leaves = dict.fromkeys(self.get_hint_index(w), set([w]))
-                hint_tree = self.merge_hint_dicts(hint_tree, add_leaves)
+                for i in self.get_hint_index(w):
+                    hint_tree[i].add(w)
             with open("ew_hint_tree.txt", "w") as output_file:
                 output_file.write(str({self.word_length: hint_tree}))
         return(hint_tree)
