@@ -276,27 +276,28 @@ class ew_configuration(ew_platform):
             self.display_settings()
             # If we're good already, ignore the rest
             confirm = input("Is this the game you'd like to play? (Y / N) ")
-            if confirm.lower() in ('yes','y','you betcha'):
-                break
-            elif confirm.lower() in ('quit','q','exit','e','stop'):
+            if confirm.lower() in ('no', 'n', 'nope'):
+                # Game type drives the rest of the questions
+                new_value = input(self.settings['game_type']['question']+' ').lower()
+                game_type = self._validate(
+                    self.settings['game_type']['value'],
+                    new_value,
+                    self.settings['game_type']['options'])
+                self.settings['game_type']["value"] = game_type
+                # Rest of the questions
+                for (setting, i) in self.settings.items():
+                    if (game_type in setting):
+                        new_value = input(i['question']+' ')
+                        if "options" in i:
+                            validated = self._validate(i['value'], new_value, i['options'])
+                        else:
+                            validated = self._validate(i['value'], new_value)
+                        self.settings[setting]['value'] = validated
+            elif confirm.lower() in ('quit', 'q', 'exit', 'e', 'stop'):
                 print('OK, see you next time.')
                 exit()
-            # Game type drives the rest of the questions
-            new_value = input(self.settings['game_type']['question']+' ').lower()
-            game_type = self._validate(
-                self.settings['game_type']['value'],
-                new_value,
-                self.settings['game_type']['options'])
-            self.settings['game_type']["value"] = game_type
-            # Rest of the questions
-            for (setting, i) in self.settings.items():
-                if (game_type in setting):
-                    new_value = input(i['question']+' ')
-                    if "options" in i:
-                        validated = self._validate(i['value'], new_value, i['options'])
-                    else:
-                        validated = self._validate(i['value'], new_value)
-                    self.settings[setting]['value'] = validated
+            else:
+                break
         with open(self.filename, 'w') as f:
             f.write(json.dumps(self.settings, indent=4)) 
         print("Great!")
