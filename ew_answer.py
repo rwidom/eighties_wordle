@@ -79,9 +79,10 @@ class all_the_words:
         """
         return [ str(i).zfill(2)+word[i] for i in range(self.word_length) if word[i] != '_' ]
 
-    def _build_hint_tree(self):
+    def _build_hint_tree(self, game_type='words'):
         """ 
-        Takes the list of words, and transforms it into a hierarchy to use for quickly finding hints.
+        Takes the list of words, and the game type, and transforms it into a hierarchy 
+        to use for quickly finding hints.
         The idea is from here: https://wdi.centralesupelec.fr/1CC1000/Hangman
 
         The hint tree is a dict:
@@ -95,31 +96,19 @@ class all_the_words:
         changes.
         """
         assert type(self.word_list) == list
-        try:
-            # for this to work, file must exist, and it must be a dict for the game 
-            # word length 
-            with open("ew_hint_tree.txt", "r") as input_file:
-                ew_hint_tree_data = input_file.read()
-            ew_hint_tree = literal_eval(ew_hint_tree_data)
-            # we read the types correctly
-            assert isinstance(ew_hint_tree, dict)
-            # we have the right word length
-            assert self.word_length in ew_hint_tree
-            hint_tree = ew_hint_tree[self.word_length]
-        except:
-            print('Give me a second to collect hints for you...')
-            # if that's not true, we'll create the hint tree and write it to this file 
-            # for next time
-            hint_tree = {
-                str(n).zfill(2) + l: set()
-                for n in range(self.word_length)
-                for l in string.ascii_uppercase
-            }
-            for w in self.word_list:
-                for i in self.get_hint_index(w):
-                    hint_tree[i].add(w)
-            with open("ew_hint_tree.txt", "w") as output_file:
-                output_file.write(str({self.word_length: hint_tree}))
+        assert game_type in ('words', 'equations')
+        if game_type == 'words':
+            characters = string.ascii_uppercase
+        elif game_type == 'equations':
+            characters = string.digits + '+-/x*='
+        hint_tree = {
+            str(n).zfill(2) + l: set()
+            for n in range(self.word_length)
+            for l in characters
+        }
+        for w in self.word_list:
+            for i in self.get_hint_index(w):
+                hint_tree[i].add(w)
         return(hint_tree)
 
     def collect_hints(self, my_word):
@@ -150,7 +139,7 @@ class all_the_equations(all_the_words):
         self.max_value = max_value
         ## massaging / generation
         (self.word_list, self.answer) = self.get_equations()
-        self.hint_tree = self._build_hint_tree()
+        self.hint_tree = self._build_hint_tree('equations')
 
     def get_equations(self):
         # TO DO: move this to configuration step
