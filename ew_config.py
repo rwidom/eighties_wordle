@@ -185,7 +185,17 @@ class ew_configuration(ew_platform):
         """reads basic game settings from the json file"""
         if os.path.exists(self.filename):
             with open(self.filename) as f:
-                return dict(json.load(f))
+                alphabetical_order = dict(json.load(f))
+            preferred_order = [
+                "game_type",
+                "word_length_equations",
+                "word_length_words",
+                "game_length_equations",
+                "game_length_words",
+                "absurdle_words",
+                "max_value_equations",
+            ]
+            return {s: alphabetical_order[s] for s in preferred_order}
         else:
             print("Uh-oh, I'm not able to access your settings file.")
 
@@ -205,29 +215,34 @@ class ew_configuration(ew_platform):
 
     def get_settings_display_table(self):
         """
-        Returns a list rows (dicts) each containing row title (options desc), words
+        Returns a list of rows (dicts) each containing row title (options desc), words
         value (if applicable, with letter display object colored with OK if words is the
-        game type, NO if not), equations value (same logic), row number, and padding
+        game type, unknown if not), equations value (same logic), row number, & padding
         strings for display. The first row is game type.
 
-        Assumes that there are two possible settings, though it's built for flexibility
+        Assumes that there are two possible game types, but it's built for flexibility
         on the names (e.g. if we want to change capitalization or order of the columns).
         Also assumes that all settings we want to display (except for game type) will
         have one or the other game types in their names.
         """
-        column1_selected = self.settings["game_type"]["value"] == self.column1
+        if self.settings["game_type"]["value"] == self.column1:
+            col1_status = "OK"
+            col2_status = "?"
+        else:
+            col1_status = "?"
+            col2_status = "OK"
         rows = {
             "Game Type": {
                 "row_number": 0,
                 "column1_pad": self.column_padding(self.column1),
                 self.column1: letter_display(
                     self.column1,
-                    ("OK" * column1_selected + "?" * (1 - column1_selected)),
+                    col1_status,
                 ),
                 "column2_pad": self.column_padding(self.column2),
                 self.column2: letter_display(
                     self.column2,
-                    ("?" * column1_selected + "OK" * (1 - column1_selected)),
+                    col2_status,
                 ),
             }
         }
@@ -244,15 +259,13 @@ class ew_configuration(ew_platform):
                 }
             # then add the values as they come up
             if self.column1 in s:
-                status = "OK" * column1_selected + "?" * (1 - column1_selected)
                 rows[info["desc"]][self.column1] = letter_display(
-                    str(info["value"]), status
+                    str(info["value"]), col1_status
                 )
                 rows[info["desc"]]["column1_pad"] = self.column_padding(info["value"])
             elif self.column2 in s:
-                status = "?" * column1_selected + "OK" * (1 - column1_selected)
                 rows[info["desc"]][self.column2] = letter_display(
-                    str(info["value"]), status
+                    str(info["value"]), col2_status
                 )
                 rows[info["desc"]]["column2_pad"] = self.column_padding(info["value"])
         list_of_dicts = [
@@ -354,4 +367,5 @@ class ew_configuration(ew_platform):
 
 if __name__ == "__main__":
     s = ew_configuration()
-    s.check_settings()
+    print("\n".join(list(s.settings)))
+    # s.check_settings()
